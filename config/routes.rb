@@ -1,6 +1,17 @@
 Rails.application.routes.draw do
-  match("/users", { :controller => "application", :action => "show", :via => "get" })
+  get "/users" => "users#index"
+  get "/users/:username" => "users#show"
+  get "/users/:username/own_photos" => "users#own_photos"
+  get "/users/:username/liked_photos" => "users#liked_photos"
+  get "/users/:username/feed" => "users#feed"
+  get "/users/:username/discover" => "users#discover"
 
+  get "/photos/:id" => "photos#show"
+  get "/photos/:id/likes" => "photos#likes"
+  get "/photos/:id/fans" => "photos#fans"
+  get "/photos/:id/comments" => "photos#comments"
+
+  
 
   # ============
 
