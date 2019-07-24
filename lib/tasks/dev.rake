@@ -3,6 +3,18 @@ desc "Fill the database tables with some dummy data"
   task({ :prime => :environment}) do
     starting = Time.now
 
+    if Rails.env.production?
+      ActiveRecord::Base.connection.tables.each do |t|
+        ActiveRecord::Base.connection.reset_pk_sequence!(t)
+      end
+    end
+
+    User.delete_all
+    Photo.delete_all
+    Like.delete_all
+    Comment.delete_all
+    FollowRequest.delete_all
+
     User.create([
       {id: 81, username: "Galen", private: false, likes_count: 97, comments_count: 98, created_at: "2015-01-19 09:24:34"},
       {id: 82, username: "Trina", private: false, likes_count: 22, comments_count: 35, created_at: "2014-09-02 06:05:56"},
