@@ -271,6 +271,7 @@ GEM
     rspec-html-matchers (0.9.1)
       nokogiri (~> 1)
       rspec (>= 3.0.0.a, < 4)
+    rspec-json_expectations (2.2.0)
     rspec-mocks (3.8.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
@@ -391,6 +392,7 @@ DEPENDENCIES
   rails (~> 5.2.3)
   rails_12factor
   rspec-html-matchers
+  rspec-json_expectations
   rspec-rails
   sass-rails (~> 5.0)
   spring

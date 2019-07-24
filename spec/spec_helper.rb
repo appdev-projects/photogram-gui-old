@@ -1,3 +1,4 @@
+require "rspec/json_expectations"
 require "factory_bot_rails"
 require "#{File.expand_path('../support/json_output_formatter', __FILE__)}"
 require "#{File.expand_path('../support/hint_formatter', __FILE__)}"

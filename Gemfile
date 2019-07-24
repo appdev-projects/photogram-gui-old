@@ -72,6 +72,7 @@ end
 group :test do
   gem 'capybara'
   gem 'factory_bot_rails'
+  gem 'rspec-json_expectations'
   gem 'rspec-rails'
   gem 'webmock'
   gem 'rspec-html-matchers'
