@@ -64,7 +64,7 @@ For example:
 
 should show a list of photos liked by the people the user is following.
 
-## /photos/[ANY EXISTING ID]
+## /photos/[ANY EXISTING PHOTO ID]
 
 For example:
 
@@ -74,7 +74,7 @@ For example:
 
 should show the details of one photo.
 
-## /photos/[ANY EXISTING ID]/likes
+## /photos/[ANY EXISTING PHOTO ID]/likes
 
 For example:
 
@@ -84,7 +84,7 @@ For example:
 
 should show a list of the photo's likes.
 
-## /photos/[ANY EXISTING ID]/fans
+## /photos/[ANY EXISTING PHOTO ID]/fans
 
 For example:
 
@@ -94,7 +94,7 @@ For example:
 
 should show a list of the photo's fans.
 
-## /insert_like_record
+## /insert_like_record?input_photo_id=[ANY EXISTING PHOTO ID]&input_user_id=[ANY EXISTING USER ID]
 
 For example,
 
@@ -104,7 +104,7 @@ For example,
 
 should add a record to the likes table.
 
-## /delete_like/[ANY EXISTING ID]
+## /delete_like/[ANY EXISTING LIKE ID]
 
 For example:
 
@@ -114,7 +114,7 @@ For example:
 
 should delete a record from the likes table.
 
-## /photos/[ANY EXISTING ID]/comments
+## /photos/[ANY EXISTING PHOTO ID]/comments
 
 For example:
 
@@ -124,7 +124,7 @@ For example:
 
 should show a list of the photo's comments.
 
-## /insert_comment_record
+## /insert_comment_record?input_photo_id=[ANY EXISTING PHOTO ID]&input_user_id=[ANY EXISTING USER ID]&input_body=[THE COMMENT BODY]
 
 For example,
 
@@ -134,12 +134,12 @@ For example,
 
 should add a record to the comments table.
 
-## /update_comment_record/[ANY EXISTING ID]
+## /update_comment_record/[ANY EXISTING COMMENT ID]?input_body=[THE UPDATED COMMENT BODY]
 
 For example:
 
 ```
-/update_comment_record/4288?input_body=Updated comment body
+/update_comment_record/4288?input_body=A better comment body
 ```
 
 should update the comment.
