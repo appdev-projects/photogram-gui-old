@@ -16,7 +16,7 @@ describe "/users" do
   end
 end
 
-describe "/users/[USERNAME]" do
+describe "/users/[ANY EXISTING USERNAME]" do
   it "has the details of the user", :points => 1 do
     user = User.new
     user.username = "alice_#{rand(100)}"
@@ -28,125 +28,37 @@ describe "/users/[USERNAME]" do
   end
 end
 
-describe "/photos/[ID]" do
-  it "has the details of the photo" do
+describe "/users/[ANY EXISTING USERNAME]/own_photos" do
+  it "has the photos posted by the user", :points => 1 do
     user = User.new
+    user.username = "alice_#{rand(100)}"
     user.save
 
-    photo = Photo.new
-    photo.owner_id = user.id
-    photo.caption = "Some caption #{rand(100)}"
-    photo.image = "http://some.random.url/file#{rand(100)}.jpg"
-    photo.save
+    other_user = User.new
+    other_user.save
 
-    get "/photos/#{photo.id}"
+    first_photo = Photo.new
+    first_photo.owner_id = user.id
+    first_photo.caption = "First caption #{rand(100)}"
+    first_photo.save
 
-    expect(response.body).to eq(photo.to_json)
+    second_photo = Photo.new
+    second_photo.owner_id = other_user.id
+    second_photo.caption = "Second caption #{rand(100)}"
+    second_photo.save
+
+    third_photo = Photo.new
+    third_photo.owner_id = user.id
+    third_photo.caption = "Third caption #{rand(100)}"
+    third_photo.save
+
+    get "/users/#{user.username}/own_photos"
+
+    expect(response.body).to eq(user.own_photos.to_json)
   end
 end
 
-
-# describe "/photos/[ID]" do
-#   it "has the comments left on the photo" do
-#     user = User.new
-#     user.save
-
-#     photo = Photo.new
-#     photo.owner_id = user.id
-#     photo.save
-
-#     first_commenter = User.new
-#     first_commenter.save
-
-#     first_comment = Comment.new
-#     first_comment.author_id = first_commenter.id
-#     first_comment.photo_id = photo.id
-#     first_comment.body = "Some comment #{rand(100)}"
-#     first_comment.save
-
-#     second_commenter = User.new
-#     second_commenter.save
-
-#     second_comment = Comment.new
-#     second_comment.author_id = second_commenter.id
-#     second_comment.photo_id = photo.id
-#     second_comment.body = "Some comment #{rand(100)}"
-#     second_comment.save
-
-#     visit "/photos/#{photo.id}"
-
-#     expect(page).to have_content(first_comment.body)
-#     expect(page).to have_content(second_comment.body)
-#   end
-# end
-
-# describe "/photos/[ID]" do
-#   it "has the usernames of commenters on the photo" do
-#     user = User.new
-#     user.save
-
-#     photo = Photo.new
-#     photo.owner_id = user.id
-#     photo.save
-
-#     first_commenter = User.new
-#     first_commenter.username = "bob_#{rand(100)}"
-#     first_commenter.save
-
-#     first_comment = Comment.new
-#     first_comment.author_id = first_commenter.id
-#     first_comment.photo_id = photo.id
-#     first_comment.save
-
-#     second_commenter = User.new
-#     second_commenter.username = "carol_#{rand(100)}"
-#     second_commenter.save
-
-#     second_comment = Comment.new
-#     second_comment.author_id = second_commenter.id
-#     second_comment.photo_id = photo.id
-#     second_comment.save
-
-#     visit "/photos/#{photo.id}"
-
-#     expect(page).to have_content(first_commenter.username)
-#     expect(page).to have_content(second_commenter.username)
-#   end
-# end
-
-
-# describe "/users/[ID]" do
-#   it "has the photos posted by the user", :points => 1 do
-#     user = User.new
-#     user.save
-
-#     other_user = User.new
-#     other_user.save
-
-#     first_photo = Photo.new
-#     first_photo.owner_id = user.id
-#     first_photo.caption = "First caption #{rand(100)}"
-#     first_photo.save
-
-#     second_photo = Photo.new
-#     second_photo.owner_id = other_user.id
-#     second_photo.caption = "Second caption #{rand(100)}"
-#     second_photo.save
-
-#     third_photo = Photo.new
-#     third_photo.owner_id = user.id
-#     third_photo.caption = "Third caption #{rand(100)}"
-#     third_photo.save
-
-#     visit "/users/#{user.id}"
-
-#     expect(page).to have_content(first_photo.caption)
-#     expect(page).to have_content(third_photo.caption)
-#     expect(page).to have_no_content(second_photo.caption)
-#   end
-# end
-
-# describe "/users/[ID]/liked" do
+# describe "/users/[ANY EXISTING USERNAME]/liked_photos" do
 #   it "has the photos the user has liked", :points => 2 do
 #     user = User.new
 #     user.save
@@ -192,7 +104,7 @@ end
 #   end
 # end
 
-# describe "/users/[ID]/feed" do
+# describe "/users/[ANY EXISTING USERNAME]/feed" do
 #   it "has the photos posted by the people the user is following", :points => 4 do
 #     user = User.new
 #     user.save
@@ -281,7 +193,7 @@ end
 #   end
 # end
 
-# describe "/users/[ID]/discover" do
+# describe "/users/[ANY EXISTING USERNAME]/discover" do
 #   it "has the photos that are liked by the people the user is following", :points => 4 do
 #     user = User.new
 #     user.save
@@ -411,5 +323,56 @@ end
 
 #     expect(page).to have_no_content(first_other_user_first_liked_photo.caption)
 #     expect(page).to have_no_content(third_other_user_first_liked_photo.caption)
+#   end
+# end
+
+# describe "/photos/[ID]" do
+#   it "has the details of the photo" do
+#     user = User.new
+#     user.save
+
+#     photo = Photo.new
+#     photo.owner_id = user.id
+#     photo.caption = "Some caption #{rand(100)}"
+#     photo.image = "http://some.random.url/file#{rand(100)}.jpg"
+#     photo.save
+
+#     get "/photos/#{photo.id}"
+
+#     expect(response.body).to eq(photo.to_json)
+#   end
+# end
+
+# describe "/photos/[ID]/comments" do
+#   it "has the comments left on the photo" do
+#     user = User.new
+#     user.save
+
+#     photo = Photo.new
+#     photo.owner_id = user.id
+#     photo.save
+
+#     first_commenter = User.new
+#     first_commenter.save
+
+#     first_comment = Comment.new
+#     first_comment.author_id = first_commenter.id
+#     first_comment.photo_id = photo.id
+#     first_comment.body = "Some comment #{rand(100)}"
+#     first_comment.save
+
+#     second_commenter = User.new
+#     second_commenter.save
+
+#     second_comment = Comment.new
+#     second_comment.author_id = second_commenter.id
+#     second_comment.photo_id = photo.id
+#     second_comment.body = "Some comment #{rand(100)}"
+#     second_comment.save
+
+#     visit "/photos/#{photo.id}"
+
+#     expect(page).to have_content(first_comment.body)
+#     expect(page).to have_content(second_comment.body)
 #   end
 # end

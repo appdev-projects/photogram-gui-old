@@ -6,4 +6,8 @@ class UsersController < ApplicationController
   def show
     render json: User.find_by(username: params.fetch(:username))
   end
+
+  def own_photos
+    render json: User.find_by(username: params.fetch(:username)).own_photos
+  end
 end
