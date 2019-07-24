@@ -41,9 +41,7 @@ describe "/photos/[ID]" do
 
     get "/photos/#{photo.id}"
 
-    parsed_data = JSON.parse(response.body)
-
-    expect(parsed_data.fetch("caption")).to eq(photo.caption)
+    expect(response.body).to eq(photo.to_json)
   end
 end
 
