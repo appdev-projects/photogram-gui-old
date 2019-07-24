@@ -281,3 +281,29 @@ describe "/photos/[ANY EXISTING PHOTO ID]/comments" do
     expect(response.body).to eq(photo.comments.to_json)
   end
 end
+
+describe "/update_comment" do
+  it "updates a record in the comments table", :points => 3 do
+    user = User.new
+    user.save
+
+    photo = Photo.new
+    photo.owner_id = user.id
+    photo.save
+
+    commenter = User.new
+    commenter.save
+
+    comment = Comment.new
+    comment.author_id = commenter.id
+    comment.photo_id = photo.id
+    comment.body = "Some comment #{rand(100)}"
+    comment.save
+
+    edited_body = "A better comment #{rand(1000)}"
+
+    get "/update_comment_record/#{comment.id}?input_body=#{edited_body}"
+
+    expect(comment.reload.body).to eq(edited_body)
+  end
+end
