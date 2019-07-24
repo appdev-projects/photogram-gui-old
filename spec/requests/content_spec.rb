@@ -205,7 +205,7 @@ describe "/photos/[ANY EXISTING PHOTO ID]" do
 end
 
 describe "/insert_like_record" do
-  it "adds a record to the likes table" do
+  it "adds a fan to a photo", :points => 3 do
     user = User.new
     user.save
 
@@ -224,8 +224,33 @@ describe "/insert_like_record" do
   end
 end
 
+describe "/delete_like/[ANY EXISTING LIKE ID]" do
+  it "removes a fan from a photo", :points => 2 do
+    user = User.new
+    user.save
+
+    other_user = User.new
+    other_user.save
+
+    photo = Photo.new
+    photo.owner_id = user.id
+    photo.caption = "Some caption #{rand(100)}"
+    photo.image = "http://some.random.url/file#{rand(100)}.jpg"
+    photo.save
+
+    like = Like.new
+    like.fan_id = other_user.id
+    like.photo_id = photo.id
+    like.save
+
+    get "/delete_like/#{like.id}"
+
+    expect(photo.fans).to_not include(other_user)
+  end
+end
+
 describe "/photos/[ANY EXISTING PHOTO ID]/comments" do
-  it "has the comments left on the photo", :points => 2 do
+  it "has the comments left on the photo", :points => 1 do
     user = User.new
     user.save
 

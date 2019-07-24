@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   
   get "/photos/:id/comments" => "photos#comments"
 
-  get "/delete_like" => "likes#destroy"
+  get "/delete_like/:id" => "likes#destroy"
 
   get "/insert_comment_record" => "comments#create"
 

@@ -4,4 +4,10 @@ class LikesController < ApplicationController
 
     render json: "Created"
   end
+
+  def destroy
+    Like.find(params.fetch(:id)).destroy
+
+    render json: "Deleted"
+  end
 end
