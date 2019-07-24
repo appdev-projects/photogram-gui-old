@@ -12,23 +12,21 @@ describe "/users" do
 
     get "/users"
 
-    parsed_data = JSON.parse(response.body)
-
-    expect(User.all.json).to include_json()
+    expect(response.body).to eq(User.all.to_json)
   end
 end
 
-# describe "/users/[ID]" do
-#   it "has the username of the user", :points => 1 do
-#     user = User.new
-#     user.username = "alice_#{rand(100)}"
-#     user.save
+describe "/users/[USERNAME]" do
+  it "has the details of the user", :points => 1 do
+    user = User.new
+    user.username = "alice_#{rand(100)}"
+    user.save
 
-#     visit "/users/#{user.id}"
+    get "/users/#{user.username}"
 
-#     expect(page).to have_content(user.username)
-#   end
-# end
+    expect(response.body).to eq(user.to_json)
+  end
+end
 
 describe "/photos/[ID]" do
   it "has the details of the photo" do

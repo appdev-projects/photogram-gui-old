@@ -9,9 +9,16 @@ Rails.application.routes.draw do
   get "/photos/:id" => "photos#show"
   get "/photos/:id/likes" => "photos#likes"
   get "/photos/:id/fans" => "photos#fans"
+  
+  get "/insert_like_record" => "likes#create"
+  
   get "/photos/:id/comments" => "photos#comments"
 
-  
+  get "/delete_like" => "likes#destroy"
+
+  get "/insert_comment_record" => "comments#create"
+
+  get "/update_comment_record/:id" => "comments#update"
 
   # ============
 
