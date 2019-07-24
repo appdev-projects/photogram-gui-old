@@ -187,7 +187,7 @@ describe "/users/[ANY EXISTING USERNAME]/feed" do
   end
 end
 
-describe "/photos/[ID]" do
+describe "/photos/[ANY EXISTING PHOTO ID]" do
   it "has the details of the photo", :points => 1 do
     user = User.new
     user.save
@@ -204,7 +204,27 @@ describe "/photos/[ID]" do
   end
 end
 
-describe "/photos/[ID]/comments" do
+describe "/insert_like_record" do
+  it "adds a record to the likes table" do
+    user = User.new
+    user.save
+
+    other_user = User.new
+    other_user.save
+
+    photo = Photo.new
+    photo.owner_id = user.id
+    photo.caption = "Some caption #{rand(100)}"
+    photo.image = "http://some.random.url/file#{rand(100)}.jpg"
+    photo.save
+
+    get "/insert_like_record?input_photo_id=#{photo.id}&input_user_id=#{other_user.id}"
+
+    expect(photo.fans).to include(other_user)
+  end
+end
+
+describe "/photos/[ANY EXISTING PHOTO ID]/comments" do
   it "has the comments left on the photo", :points => 2 do
     user = User.new
     user.save
