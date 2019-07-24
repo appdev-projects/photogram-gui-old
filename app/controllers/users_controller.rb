@@ -18,4 +18,8 @@ class UsersController < ApplicationController
   def feed
     render json: User.find_by(username: params.fetch(:username)).feed
   end
+
+  def discover
+    render json: User.find_by(username: params.fetch(:username)).discover
+  end
 end

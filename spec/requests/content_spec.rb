@@ -187,186 +187,52 @@ describe "/users/[ANY EXISTING USERNAME]/feed" do
   end
 end
 
-# describe "/users/[ANY EXISTING USERNAME]/discover" do
-#   it "has the photos that are liked by the people the user is following", :points => 4 do
-#     user = User.new
-#     user.save
+describe "/photos/[ID]" do
+  it "has the details of the photo", :points => 1 do
+    user = User.new
+    user.save
 
-#     first_other_user = User.new
-#     first_other_user.save
+    photo = Photo.new
+    photo.owner_id = user.id
+    photo.caption = "Some caption #{rand(100)}"
+    photo.image = "http://some.random.url/file#{rand(100)}.jpg"
+    photo.save
 
-#     second_other_user = User.new
-#     second_other_user.save
+    get "/photos/#{photo.id}"
 
-#     third_other_user = User.new
-#     third_other_user.save
+    expect(response.body).to eq(photo.to_json)
+  end
+end
 
-#     fourth_other_user = User.new
-#     fourth_other_user.save
+describe "/photos/[ID]/comments" do
+  it "has the comments left on the photo", :points => 2 do
+    user = User.new
+    user.save
 
-#     first_other_user_first_liked_photo = Photo.new
-#     first_other_user_first_liked_photo.owner_id = fourth_other_user.id
-#     first_other_user_first_liked_photo.caption = "Some caption #{rand(100)}"
-#     first_other_user_first_liked_photo.save
+    photo = Photo.new
+    photo.owner_id = user.id
+    photo.save
 
-#     first_other_user_first_like = Like.new
-#     first_other_user_first_like.fan_id = first_other_user.id
-#     first_other_user_first_like.photo_id = first_other_user_first_liked_photo.id
-#     first_other_user_first_like.save
+    first_commenter = User.new
+    first_commenter.save
 
-#     first_other_user_second_liked_photo = Photo.new
-#     first_other_user_second_liked_photo.owner_id = fourth_other_user.id
-#     first_other_user_second_liked_photo.caption = "Some caption #{rand(100)}"
-#     first_other_user_second_liked_photo.save
+    first_comment = Comment.new
+    first_comment.author_id = first_commenter.id
+    first_comment.photo_id = photo.id
+    first_comment.body = "Some comment #{rand(100)}"
+    first_comment.save
 
-#     first_other_user_first_like = Like.new
-#     first_other_user_first_like.fan_id = first_other_user.id
-#     first_other_user_first_like.photo_id = first_other_user_second_liked_photo.id
-#     first_other_user_first_like.save
+    second_commenter = User.new
+    second_commenter.save
 
-#     second_other_user_first_liked_photo = Photo.new
-#     second_other_user_first_liked_photo.owner_id = fourth_other_user.id
-#     second_other_user_first_liked_photo.caption = "Some caption #{rand(100)}"
-#     second_other_user_first_liked_photo.save
+    second_comment = Comment.new
+    second_comment.author_id = second_commenter.id
+    second_comment.photo_id = photo.id
+    second_comment.body = "Some comment #{rand(100)}"
+    second_comment.save
 
-#     second_other_user_first_like = Like.new
-#     second_other_user_first_like.fan_id = second_other_user.id
-#     second_other_user_first_like.photo_id = second_other_user_first_liked_photo.id
-#     second_other_user_first_like.save
+    get "/photos/#{photo.id}/comments"
 
-#     second_other_user_second_liked_photo = Photo.new
-#     second_other_user_second_liked_photo.owner_id = fourth_other_user.id
-#     second_other_user_second_liked_photo.caption = "Some caption #{rand(100)}"
-#     second_other_user_second_liked_photo.save
-
-#     second_other_user_first_like = Like.new
-#     second_other_user_first_like.fan_id = second_other_user.id
-#     second_other_user_first_like.photo_id = second_other_user_second_liked_photo.id
-#     second_other_user_first_like.save
-
-#     third_other_user_first_liked_photo = Photo.new
-#     third_other_user_first_liked_photo.owner_id = fourth_other_user.id
-#     third_other_user_first_liked_photo.caption = "Some caption #{rand(100)}"
-#     third_other_user_first_liked_photo.save
-
-#     third_other_user_first_like = Like.new
-#     third_other_user_first_like.fan_id = third_other_user.id
-#     third_other_user_first_like.photo_id = third_other_user_first_liked_photo.id
-#     third_other_user_first_like.save
-
-#     third_other_user_second_liked_photo = Photo.new
-#     third_other_user_second_liked_photo.owner_id = fourth_other_user.id
-#     third_other_user_second_liked_photo.caption = "Some caption #{rand(100)}"
-#     third_other_user_second_liked_photo.save
-
-#     third_other_user_first_like = Like.new
-#     third_other_user_first_like.fan_id = third_other_user.id
-#     third_other_user_first_like.photo_id = third_other_user_second_liked_photo.id
-#     third_other_user_first_like.save
-
-#     fourth_other_user_first_liked_photo = Photo.new
-#     fourth_other_user_first_liked_photo.owner_id = fourth_other_user.id
-#     fourth_other_user_first_liked_photo.caption = "Some caption #{rand(100)}"
-#     fourth_other_user_first_liked_photo.save
-
-#     fourth_other_user_first_like = Like.new
-#     fourth_other_user_first_like.fan_id = fourth_other_user.id
-#     fourth_other_user_first_like.photo_id = fourth_other_user_first_liked_photo.id
-#     fourth_other_user_first_like.save
-
-#     fourth_other_user_second_liked_photo = Photo.new
-#     fourth_other_user_second_liked_photo.owner_id = fourth_other_user.id
-#     fourth_other_user_second_liked_photo.caption = "Some caption #{rand(100)}"
-#     fourth_other_user_second_liked_photo.save
-
-#     fourth_other_user_first_like = Like.new
-#     fourth_other_user_first_like.fan_id = fourth_other_user.id
-#     fourth_other_user_first_like.photo_id = fourth_other_user_second_liked_photo.id
-#     fourth_other_user_first_like.save
-
-#     first_follow_request = FollowRequest.new
-#     first_follow_request.sender_id = user.id
-#     first_follow_request.recipient_id = first_other_user.id
-#     first_follow_request.status = "rejected"
-#     first_follow_request.save
-
-#     second_follow_request = FollowRequest.new
-#     second_follow_request.sender_id = user.id
-#     second_follow_request.recipient_id = second_other_user.id
-#     second_follow_request.status = "accepted"
-#     second_follow_request.save
-
-#     third_follow_request = FollowRequest.new
-#     third_follow_request.sender_id = user.id
-#     third_follow_request.recipient_id = third_other_user.id
-#     third_follow_request.status = "pending"
-#     third_follow_request.save
-
-#     fourth_follow_request = FollowRequest.new
-#     fourth_follow_request.sender_id = user.id
-#     fourth_follow_request.recipient_id = fourth_other_user.id
-#     fourth_follow_request.status = "accepted"
-#     fourth_follow_request.save
-
-#     visit "/users/#{user.id}/discover"
-
-#     expect(page).to have_content(second_other_user_first_liked_photo.caption)
-#     expect(page).to have_content(second_other_user_second_liked_photo.caption)
-#     expect(page).to have_content(fourth_other_user_first_liked_photo.caption)
-#     expect(page).to have_content(fourth_other_user_second_liked_photo.caption)
-
-#     expect(page).to have_no_content(first_other_user_first_liked_photo.caption)
-#     expect(page).to have_no_content(third_other_user_first_liked_photo.caption)
-#   end
-# end
-
-# describe "/photos/[ID]" do
-#   it "has the details of the photo" do
-#     user = User.new
-#     user.save
-
-#     photo = Photo.new
-#     photo.owner_id = user.id
-#     photo.caption = "Some caption #{rand(100)}"
-#     photo.image = "http://some.random.url/file#{rand(100)}.jpg"
-#     photo.save
-
-#     get "/photos/#{photo.id}"
-
-#     expect(response.body).to eq(photo.to_json)
-#   end
-# end
-
-# describe "/photos/[ID]/comments" do
-#   it "has the comments left on the photo" do
-#     user = User.new
-#     user.save
-
-#     photo = Photo.new
-#     photo.owner_id = user.id
-#     photo.save
-
-#     first_commenter = User.new
-#     first_commenter.save
-
-#     first_comment = Comment.new
-#     first_comment.author_id = first_commenter.id
-#     first_comment.photo_id = photo.id
-#     first_comment.body = "Some comment #{rand(100)}"
-#     first_comment.save
-
-#     second_commenter = User.new
-#     second_commenter.save
-
-#     second_comment = Comment.new
-#     second_comment.author_id = second_commenter.id
-#     second_comment.photo_id = photo.id
-#     second_comment.body = "Some comment #{rand(100)}"
-#     second_comment.save
-
-#     visit "/photos/#{photo.id}"
-
-#     expect(page).to have_content(first_comment.body)
-#     expect(page).to have_content(second_comment.body)
-#   end
-# end
+    expect(response.body).to eq(photo.comments.to_json)
+  end
+end
