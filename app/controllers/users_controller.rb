@@ -10,4 +10,12 @@ class UsersController < ApplicationController
   def own_photos
     render json: User.find_by(username: params.fetch(:username)).own_photos
   end
+
+  def liked_photos
+    render json: User.find_by(username: params.fetch(:username)).liked_photos
+  end
+
+  def feed
+    render json: User.find_by(username: params.fetch(:username)).feed
+  end
 end
