@@ -302,7 +302,7 @@ describe "/patch_comment" do
 
     edited_body = "A better comment #{rand(1000)}"
 
-    get "/patch_comment/#{comment.id}?qs_body=#{edited_body}.json"
+    get "/patch_comment/#{comment.id}?qs_body=#{edited_body}"
 
     expect(comment.reload.body).to eq(edited_body)
   end
