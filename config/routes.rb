@@ -9,15 +9,15 @@ Rails.application.routes.draw do
 
   # READ
   match("/users", {:controller => "users", :action => "index", :via => "get"})
-  match("/users/:username", {:controller => "users", :action => "show", :via => "get"})
-  match("/users/:username/own_photos", {:controller => "users", :action => "own_photos", :via => "get"})
-  match("/users/:username/liked_photos", {:controller => "users", :action => "liked_photos", :via => "get"})
-  match("/users/:username/feed", {:controller => "users", :action => "feed", :via => "get"})
-  match("/users/:username/discover", {:controller => "users", :action => "discover", :via => "get"})
+  match("/users/:rt_username", {:controller => "users", :action => "show", :via => "get"})
+  match("/users/:rt_username/own_photos", {:controller => "users", :action => "own_photos", :via => "get"})
+  match("/users/:rt_username/liked_photos", {:controller => "users", :action => "liked_photos", :via => "get"})
+  match("/users/:rt_username/feed", {:controller => "users", :action => "feed", :via => "get"})
+  match("/users/:rt_username/discover", {:controller => "users", :action => "discover", :via => "get"})
   
 
   # UPDATE
-  match("/patch_user/:rt_user_id", {:controller => "users", :action => "update", :via => "get"})
+  match("/patch_user/:rt_user_id", {:controller => "users", :action => "update", :via => "post"})
 
   # DELETE
   match("/delete_user/:rt_user_id", {:controller => "users", :action => "destroy", :via => "get"})
