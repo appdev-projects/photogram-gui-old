@@ -1,4 +1,4 @@
-# Photogram API
+# Photogram GUI
 
 ## Your tasks
 
