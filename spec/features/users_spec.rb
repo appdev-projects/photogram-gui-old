@@ -30,15 +30,6 @@ describe "/users" do
   end
 end
 
-describe "/users" do
-  it "displays all users", points: 1 do
-    create_list(:user, 2)
-
-    visit "/users"
-
-    expect(page).to have_css("h1", minimum: 2)
-  end
-end
 
 describe "/users" do
   it "display multiple links to details pages", points: 1 do
@@ -54,7 +45,7 @@ describe "Root URL" do
   it "is the users index page", points: 1, hint: h("copy_must_match") do
     visit "/"
 
-    expect(page).to have_css("h1", text: "All Users")
+    expect(page).to have_css("h1", text: "List of users")
   end
 end
 
@@ -79,14 +70,6 @@ describe "/users" do
     visit "/users"
 
     expect(page).to have_css("label", text: "Username")
-  end
-end
-
-describe "/users" do
-  it "has a label for 'private'", points: 1, hint: h("copy_must_match label_for_input") do
-    visit "/users"
-
-    expect(page).to have_css("label", text: "Private")
   end
 end
 
@@ -132,17 +115,6 @@ describe "/users" do
   end
 end
 
-describe "/users" do
-  it "saves the private field when submitted", points: 1, hint: h("label_for_input") do
-    public_field = false
-    visit "/users"
-    fill_in("Private", with: "false")
-    click_on "Create User"
-
-    last_user = User.order(created_at: :asc).last
-    expect(last_user.private).to eq(public_field)
-  end
-end
 
 describe "/users" do
   it "redirects user to index when submitted", points: 1, hint: h("redirect_vs_render") do
