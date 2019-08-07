@@ -147,7 +147,7 @@ describe "/delete_photo/[PHOTO ID]" do
 end
 
 describe "/delete_photo/[PHOTO ID]" do
-  it "redirects to /popular", points: 1, hint: h("redirect_vs_render") do
+  it "redirects to /users", points: 1, hint: h("redirect_vs_render") do
 
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
@@ -159,7 +159,7 @@ describe "/delete_photo/[PHOTO ID]" do
 
     visit "/delete_photo/#{photo.id}"
 
-    expect(page).to have_current_path("/popular")
+    expect(page).to have_current_path("/users")
   end
 end
 

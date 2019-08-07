@@ -25,7 +25,7 @@ class UsersController < ApplicationController
     render({ :json => user.as_json })
   end
 
-  def username
+  def update
     username = params.fetch(:username)
     user = User.where({ :username => username }).at(0)
 
@@ -40,7 +40,7 @@ class UsersController < ApplicationController
     render({ :json => user.as_json })
   end
 
-  def username
+  def destroy
     username = params.fetch(:username)
     user = User.where({ :username => username }).at(0)
 

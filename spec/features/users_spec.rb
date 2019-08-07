@@ -224,15 +224,6 @@ describe "/users/[username]" do
   end
 end
 
-describe "/users/[username]" do
-  it "has input field for private prepopulated", points: 1, hint: h("value_attribute") do
-    user = create(:user, image: "http://some.pre-existing.image/image.jpg")
-
-    visit "/users/#{user.username}"
-
-    expect(page).to have_css("input[value='http://some.pre-existing.image/image.jpg']")
-  end
-end
 
 describe "/users/[username]" do
   it "updates username when submitted", points: 1, hint: h("label_for_input button_type") do
