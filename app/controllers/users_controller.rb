@@ -26,8 +26,8 @@ class UsersController < ApplicationController
   end
 
   def update
-    username = params.fetch(:username)
-    user = User.where({ :username => username }).at(0)
+    the_id = params.fetch(:rt_user_id)
+    user = User.where({ :rt_user_id => the_id }).at(0)
 
 
     user.username = params.fetch(:qs_username, user.username)
@@ -41,8 +41,8 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    username = params.fetch(:username)
-    user = User.where({ :username => username }).at(0)
+    the_id = params.fetch(:rt_user_id)
+    user = User.where({ :rt_user_id => username }).at(0)
 
     user.destroy
 

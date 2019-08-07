@@ -17,10 +17,10 @@ Rails.application.routes.draw do
   
 
   # UPDATE
-  match("/patch_user/:username", {:controller => "users", :action => "update", :via => "get"})
+  match("/patch_user/:rt_user_id", {:controller => "users", :action => "update", :via => "get"})
 
   # DELETE
-  match("/delete_user/:username", {:controller => "users", :action => "destroy", :via => "get"})
+  match("/delete_user/:rt_user_id", {:controller => "users", :action => "destroy", :via => "get"})
   
 
   
