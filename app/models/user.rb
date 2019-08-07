@@ -55,13 +55,13 @@ class User < ApplicationRecord
   def followers
     array_of_follower_ids = self.accepted_received_follow_requests.pluck(:sender_id)
 
-    return User.where({ :id => array_of_follower_ids })
+    return User.where({ :id => array_of_follower_ids }).distinct
   end
 
   def following
     array_of_leader_ids = self.accepted_sent_follow_requests.pluck(:recipient_id)
 
-    return User.where({ :id => array_of_leader_ids })
+    return User.where({ :id => array_of_leader_ids }).distinct
   end
 
   def feed

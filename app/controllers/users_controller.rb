@@ -1,15 +1,31 @@
 class UsersController < ApplicationController
   def index
-    users = User.all.order({ :username => :asc })
+    @users = User.all.order({ :username => :asc })
 
-    render({ :json => users.as_json })
+    respond_to do |format|
+      format.json do
+        render({ :json => @users.as_json })
+      end
+
+      format.html do
+        render({ :template => "users/index.html" })
+      end
+    end
   end
 
   def show
     username = params.fetch(:username)
-    user = User.where({ :username => username }).at(0)
+    @user = User.where({ :username => username }).at(0)
 
-    render({ :json => user.as_json })
+    respond_to do |format|
+      format.json do
+        render({ :json => @user.as_json })
+      end
+
+      format.html do
+        render({ :template => "users/show.html.erb" })
+      end
+    end
   end
 
   def create
@@ -25,7 +41,7 @@ class UsersController < ApplicationController
     render({ :json => user.as_json })
   end
 
-  def username
+  def update
     username = params.fetch(:username)
     user = User.where({ :username => username }).at(0)
 
@@ -40,7 +56,7 @@ class UsersController < ApplicationController
     render({ :json => user.as_json })
   end
 
-  def username
+  def destroy
     username = params.fetch(:username)
     user = User.where({ :username => username }).at(0)
 
@@ -51,9 +67,17 @@ class UsersController < ApplicationController
 
   def liked_photos
     username = params.fetch(:username)
-    user = User.where({ :username => username }).at(0)
+    @user = User.where({ :username => username }).at(0)
+  
+    respond_to do |format|
+      format.json do
+        render({ :json => @user.liked_photos.as_json })
+      end
 
-    render({ :json => user.liked_photos.as_json })
+      format.html do
+        render({ :template => "users/liked_photos.html.erb" })
+      end
+    end
   end
 
   def own_photos
@@ -65,16 +89,32 @@ class UsersController < ApplicationController
 
   def feed
     username = params.fetch(:username)
-    user = User.where({ :username => username }).at(0)
+    @user = User.where({ :username => username }).at(0)
+    
+    respond_to do |format|
+      format.json do
+        render({ :json => @user.feed.as_json })
+      end
 
-    render({ :json => user.feed.as_json })
+      format.html do
+        render({ :template => "users/feed.html.erb" })
+      end
+    end
   end
 
   def discover
     username = params.fetch(:username)
-    user = User.where({ :username => username }).at(0)
+    @user = User.where({ :username => username }).at(0)
 
-    render({ :json => user.discover.as_json })
+    respond_to do |format|
+      format.json do
+        render({ :json => @user.discover.as_json })
+      end
+
+      format.html do
+        render({ :template => "users/discover.html.erb" })
+      end
+    end
   end
 
 end

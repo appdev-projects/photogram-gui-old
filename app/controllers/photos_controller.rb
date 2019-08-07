@@ -1,15 +1,31 @@
 class PhotosController < ApplicationController
   def index
-    photos = Photo.all.order({ :owner_id => :asc })
+    @photos = Photo.all.order({ :owner_id => :asc })
 
-    render({ :json => photos.as_json })
+    respond_to do |format|
+      format.json do
+        render({ :json => @photos.as_json })
+      end
+
+      format.html do
+        render({ :template => "photos/index.html" })
+      end
+    end
   end
 
   def show
-    the_id = params.fetch(:pg_photo_id)
-    photo = Photo.where({ :id => the_id }).at(0)
+    the_id = params.fetch(:rt_photo_id)
+    @photo = Photo.where({ :id => the_id }).at(0)
 
-    render({ :json => photo.as_json })
+    respond_to do |format|
+      format.json do
+        render({ :json => @photo.as_json })
+      end
+
+      format.html do
+        render({ :template => "photos/show.html" })
+      end
+    end
   end
 
   def create
@@ -27,7 +43,7 @@ class PhotosController < ApplicationController
   end
 
   def update
-    the_id = params.fetch(:pg_photo_id)
+    the_id = params.fetch(:rt_photo_id)
     photo = Photo.where({ :id => the_id }).at(0)
 
 
@@ -38,12 +54,20 @@ class PhotosController < ApplicationController
     photo.comments_count = params.fetch(:qs_comments_count, photo.comments_count)
     
     photo.save
+  
+    respond_to do |format|
+      format.json do
+        render({ :json => photo.as_json })
+      end
 
-    render({ :json => photo.as_json })
+      format.html do
+        redirect_to("/photos/#{photo.id}")
+      end
+    end
   end
 
   def destroy
-    the_id = params.fetch(:pg_photo_id)
+    the_id = params.fetch(:rt_photo_id)
     photo = Photo.where({ :id => the_id }).at(0)
 
     photo.destroy
@@ -52,21 +76,21 @@ class PhotosController < ApplicationController
   end
  
   def comments
-    the_id = params.fetch(:pg_photo_id)
+    the_id = params.fetch(:rt_photo_id)
     photo = Photo.where({ :id => the_id }).at(0)
 
     render({ :json => photo.comments.as_json })
   end
 
   def likes
-    the_id = params.fetch(:pg_photo_id)
+    the_id = params.fetch(:rt_photo_id)
     photo = Photo.where({ :id => the_id }).at(0)
 
     render({ :json => photo.likes.as_json })
   end
 
   def fans
-    the_id = params.fetch(:pg_photo_id)
+    the_id = params.fetch(:rt_photo_id)
     photo = Photo.where({ :id => the_id }).at(0)
 
     render({ :json => photo.fans.as_json })

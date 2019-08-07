@@ -6,7 +6,7 @@ class CommentsController < ApplicationController
   end
 
   def show
-    the_id = params.fetch(:pg_comment_id)
+    the_id = params.fetch(:rt_comment_id)
     comment = Comment.where({ :id => the_id }).at(0)
 
     render({ :json => comment.as_json })
@@ -21,11 +21,19 @@ class CommentsController < ApplicationController
     
     comment.save
 
-    render({ :json => comment.as_json })
+    respond_to do |format|
+      format.json do
+        render({ :json => comment.as_json })
+      end
+
+      format.html do
+        redirect_to("/photos/#{comment.photo_id}")
+      end
+    end
   end
 
   def update
-    the_id = params.fetch(:pg_comment_id)
+    the_id = params.fetch(:rt_comment_id)
     comment = Comment.where({ :id => the_id }).at(0)
 
     comment.name = params.fetch(:qs_body, comment.body)
@@ -38,7 +46,7 @@ class CommentsController < ApplicationController
   end
 
   def destroy
-    the_id = params.fetch(:pg_comment_id)
+    the_id = params.fetch(:rt_comment_id)
     comment = Comment.where({ :id => the_id }).at(0)
 
     comment.destroy

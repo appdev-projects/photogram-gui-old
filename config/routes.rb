@@ -17,65 +17,65 @@ Rails.application.routes.draw do
   
 
   # UPDATE
-  match("/patch_user/:pg_user_id", {:controller => "users", :action => "update", :via => "get"})
+  match("/patch_user/:rt_user_id", {:controller => "users", :action => "update", :via => "get"})
 
   # DELETE
-  match("/delete_user/:pg_user_id", {:controller => "users", :action => "destroy", :via => "get"})
+  match("/delete_user/:rt_user_id", {:controller => "users", :action => "destroy", :via => "get"})
   
 
   
   # Photo routes
 
   # CREATE
-  match("/post_photo", { :controller => "photos", :action => "create", :via => "get"})
+  match("/post_photo", { :controller => "photos", :action => "create", :via => "post"})
 
   # READ
   match("/photos", { :controller => "photos", :action => "index", :via => "get"})
 
-  match("/photos/:pg_photo_id", { :controller => "photos", :action => "show", :via => "get"})
+  match("/photos/:rt_photo_id", { :controller => "photos", :action => "show", :via => "get"})
   
-  match("/photos/:pg_photo_id/comments", { :controller => "photos", :action => "comments", :via => "get"})
-  match("/photos/:pg_photo_id/likes", { :controller => "photos", :action => "likes", :via => "get"})
-  match("/photos/:pg_photo_id/fans", { :controller => "photos", :action => "fans", :via => "get"})
+  match("/photos/:rt_photo_id/comments", { :controller => "photos", :action => "comments", :via => "get"})
+  match("/photos/:rt_photo_id/likes", { :controller => "photos", :action => "likes", :via => "get"})
+  match("/photos/:rt_photo_id/fans", { :controller => "photos", :action => "fans", :via => "get"})
 
   # UPDATE
-  match("/patch_photo/:pg_photo_id", { :controller => "photos", :action => "update", :via => "get"})
+  match("/patch_photo/:rt_photo_id", { :controller => "photos", :action => "update", :via => "post"})
 
   # DELETE
-  match("/delete_photo/:pg_photo_id", { :controller => "photos", :action => "destroy", :via => "get"})
+  match("/delete_photo/:rt_photo_id", { :controller => "photos", :action => "destroy", :via => "get"})
 
 
   # Like routes
 
   # CREATE
-  match("/post_like", {:controller => "likes", :action => "create", :via => "get"})
+  match("/post_like", {:controller => "likes", :action => "create", :via => "post"})
 
   # READ
   match("/likes", {:controller => "likes", :action => "index", :via => "get"})
-  match("/likes/:pg_like_id", {:controller => "likes", :action => "show", :via => "get"})
+  match("/likes/:rt_like_id", {:controller => "likes", :action => "show", :via => "get"})
 
   # UPDATE
-  match("/patch_like/:pg_like_id", {:controller => "likes", :action => "update", :via => "get"})
+  match("/patch_like/:rt_like_id", {:controller => "likes", :action => "update", :via => "get"})
 
   # DELETE
-  match("/delete_like/:pg_like_id", {:controller => "likes", :action => "destroy", :via => "get"})
+  match("/delete_like/:rt_like_id", {:controller => "likes", :action => "destroy", :via => "get"})
   
   # Comment routes
 
   # CREATE
-  match("/post_comment", { :controller => "comments", :action => "create", :via => "get"})
+  match("/post_comment", { :controller => "comments", :action => "create", :via => "post"})
 
   # READ
   match("/comments", { :controller => "comments", :action => "index", :via => "get"})
-  match("/comments/:pg_comment_id", { :controller => "comments", :action => "show", :via => "get"})
+  match("/comments/:rt_comment_id", { :controller => "comments", :action => "show", :via => "get"})
 
   # UPDATE
-  match("/patch_comment/:pg_comment_id", { :controller => "comments", :action => "update", :via => "get"})
+  match("/patch_comment/:rt_comment_id", { :controller => "comments", :action => "update", :via => "get"})
 
   # DELETE
   match("/post_comment", { :controller => "comments", :action => "create", :via => "get"})
 
-  match("/delete_comment/:pg_comment_id", { :controller => "comments", :action => "destroy", :via => "get"})
+  match("/delete_comment/:rt_comment_id", { :controller => "comments", :action => "destroy", :via => "get"})
 
 
   # ============
