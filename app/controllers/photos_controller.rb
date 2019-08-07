@@ -1,6 +1,6 @@
 class PhotosController < ApplicationController
   def index
-    @photos = Photo.all.order({ :owner_id => :asc })
+    @photos = Photo.all.order({ :created_at => :desc })
 
     respond_to do |format|
       format.json do
@@ -39,7 +39,15 @@ class PhotosController < ApplicationController
     
     photo.save
 
-    render({ :json => photo.as_json })
+    respond_to do |format|
+      format.json do
+        render({ :json => photo.as_json })
+      end
+
+      format.html do
+        redirect_to("/photos")
+      end
+    end
   end
 
   def update
@@ -79,21 +87,26 @@ class PhotosController < ApplicationController
     the_id = params.fetch(:rt_photo_id)
     photo = Photo.where({ :id => the_id }).at(0)
 
-    render({ :json => photo.comments.as_json })
+    the_comments = photo.comments.order(:created_at)
+
+    render({ :json => the_comments.as_json })
   end
 
   def likes
     the_id = params.fetch(:rt_photo_id)
     photo = Photo.where({ :id => the_id }).at(0)
 
-    render({ :json => photo.likes.as_json })
+    the_likes = photo.likes.order(:created_at)
+
+    render({ :json => likes.as_json })
   end
 
   def fans
     the_id = params.fetch(:rt_photo_id)
     photo = Photo.where({ :id => the_id }).at(0)
 
-    render({ :json => photo.fans.as_json })
-  end
+    the_fans = photo.fans.order(:created_at)
 
+    render({ :json => the_fans.as_json })
+  end
 end

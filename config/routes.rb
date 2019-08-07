@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   # User routes
 
   # CREATE
-  match("/post_user", {:controller => "users", :action => "create", :via => "get"})
+  match("/post_user", {:controller => "users", :action => "create", :via => "post"})
 
   # READ
   match("/users", {:controller => "users", :action => "index", :via => "get"})
