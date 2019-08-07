@@ -6,7 +6,7 @@ class PhotosController < ApplicationController
   end
 
   def show
-    the_id = params.fetch(:pg_photo_id)
+    the_id = params.fetch(:fr_photo_id)
     photo = Photo.where({ :id => the_id }).at(0)
 
     render({ :json => photo.as_json })
@@ -27,7 +27,7 @@ class PhotosController < ApplicationController
   end
 
   def update
-    the_id = params.fetch(:pg_photo_id)
+    the_id = params.fetch(:fr_photo_id)
     photo = Photo.where({ :id => the_id }).at(0)
 
 
@@ -43,7 +43,7 @@ class PhotosController < ApplicationController
   end
 
   def destroy
-    the_id = params.fetch(:pg_photo_id)
+    the_id = params.fetch(:fr_photo_id)
     photo = Photo.where({ :id => the_id }).at(0)
 
     photo.destroy
@@ -52,21 +52,21 @@ class PhotosController < ApplicationController
   end
  
   def comments
-    the_id = params.fetch(:pg_photo_id)
+    the_id = params.fetch(:fr_photo_id)
     photo = Photo.where({ :id => the_id }).at(0)
 
     render({ :json => photo.comments.as_json })
   end
 
   def likes
-    the_id = params.fetch(:pg_photo_id)
+    the_id = params.fetch(:fr_photo_id)
     photo = Photo.where({ :id => the_id }).at(0)
 
     render({ :json => photo.likes.as_json })
   end
 
   def fans
-    the_id = params.fetch(:pg_photo_id)
+    the_id = params.fetch(:fr_photo_id)
     photo = Photo.where({ :id => the_id }).at(0)
 
     render({ :json => photo.fans.as_json })

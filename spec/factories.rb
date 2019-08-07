@@ -5,17 +5,17 @@ FactoryBot.define do
   end
 
   factory :user do
-    sequence(:username) { |n| "Person ##{n}" }
+    sequence(:username) { |n| "username_#{n}" }
   end
 
   factory :like do
-    sequence(:fan_id) { |n| n} }
-    sequence(:photo_id) { |n| n} }
+    sequence(:fan_id) { |n| n }
+    sequence(:photo_id) { |n| n }
   end
 
   factory :comment do
-    sequence(:author_id) { |n| n} }
-    sequence(:photo_id) { |n| n} }
+    sequence(:author_id) { |n| n }
+    sequence(:photo_id) { |n| n }
     sequence(:body) { |n| 
       "What a nice photo! My favorite number is also #{n}"
      }

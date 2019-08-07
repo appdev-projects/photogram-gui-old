@@ -6,7 +6,7 @@ class LikesController < ApplicationController
   end
 
   def show
-    the_id = params.fetch(:pg_like_id)
+    the_id = params.fetch(:fr_like_id)
     like = Like.where({ :id => the_id }).at(0)
 
     render({ :json => like.as_json })
@@ -22,7 +22,7 @@ class LikesController < ApplicationController
   end
 
   def update
-    the_id = params.fetch(:pg_like_id)
+    the_id = params.fetch(:fr_like_id)
     like = Like.where({ :id => the_id }).at(0)
     like.fan_id = params.fetch(:qs_fan_id, nil)
     like.photo_id = params.fetch(:qs_photo_id, nil)
@@ -32,7 +32,7 @@ class LikesController < ApplicationController
   end
 
   def destroy
-    like = Like.find(params.fetch(:pg_like_id)).destroy
+    like = Like.find(params.fetch(:fr_like_id)).destroy
     like.destroy
 
     render({ :json => like.as_json })
