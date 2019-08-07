@@ -4,7 +4,7 @@ describe "/photos" do
   it "has a functional RCAV", points: 1 do
     visit "/photos"
 
-    expect(page.status_code).to be(100)
+    expect(page.status_code).to be(200)
   end
 end
 
