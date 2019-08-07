@@ -28,9 +28,9 @@ class CommentsController < ApplicationController
     the_id = params.fetch(:pg_comment_id)
     comment = Comment.where({ :id => the_id }).at(0)
 
-    comment.name = params.fetch(:qs_body, comment.body)
-    comment.dob = params.fetch(:qs_author_id, comment.author_id)
-    comment.bio = params.fetch(:qs_photo_id, comment.photo_id)
+    comment.author_id = params.fetch(:qs_author_id, comment.author_id)
+    comment.photo_id = params.fetch(:qs_photo_id, comment.photo_id)
+    comment.body = params.fetch(:qs_body, comment.body)
 
     comment.save
 
