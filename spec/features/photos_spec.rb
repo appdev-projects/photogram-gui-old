@@ -62,10 +62,15 @@ describe "/photos" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    test_user = User.new
+    test_user.username = "username"
+    test_user.save 
+
     visit "/photos"
 
     fill_in "Image", with: test_image
     fill_in "Caption", with: test_caption
+    fill_in "Owner ID", with: test_user.id
 
     click_on "Add photo"
 
@@ -81,10 +86,15 @@ describe "/photos" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    test_user = User.new
+    test_user.username = "username"
+    test_user.save 
+
     visit "/photos"
 
     fill_in "Image", with: test_image
     fill_in "Caption", with: test_caption
+    fill_in "Owner ID", with: test_user.id
 
     click_on "Add photo"
 
@@ -99,10 +109,16 @@ describe "/photos" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    test_user = User.new
+    test_user.username = "username"
+    test_user.save 
+
     visit "/photos"
 
     fill_in "Image", with: test_image
     fill_in "Caption", with: test_caption
+    fill_in "Owner ID", with: test_user.id
+
 
     click_on "Add photo"
 
@@ -138,10 +154,15 @@ describe "/delete_photo/[PHOTO ID]" do
 
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
-
+    
+    user = User.new
+    user.username = "adora"
+    user.save
+    
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     visit "/delete_photo/#{photo.id}"
@@ -156,9 +177,14 @@ describe "/delete_photo/[PHOTO ID]" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    user = User.new
+    user.username = "adora"
+    user.save
+
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     visit "/delete_photo/#{photo.id}"

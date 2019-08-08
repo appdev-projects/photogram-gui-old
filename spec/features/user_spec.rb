@@ -110,6 +110,7 @@ describe "/users" do
     initial_number_of_users = User.count
 
     visit "/users"
+    fill_in("Username", with: "test_username")
 
     click_on "Add user"
 
@@ -240,11 +241,13 @@ require "rails_helper"
 describe "/photos/[ID]" do
   it "has the caption of the photo" do
     user = User.new
+    user.username = "ramseys"
     user.save
 
     photo = Photo.new
     photo.owner_id = user.id
     photo.caption = "Some caption #{rand(100)}"
+    photo.image = "Some caption #{rand(100)}"
     photo.save
 
     visit "/photos/#{photo.id}"
@@ -261,6 +264,7 @@ describe "/photos/[ID]" do
 
     photo = Photo.new
     photo.owner_id = user.id
+    photo.image = user.id
     photo.save
 
     visit "/photos/#{photo.id}"
@@ -272,13 +276,16 @@ end
 describe "/photos/[ID]" do
   it "has the comments left on the photo" do
     user = User.new
+    user.username = "bagel_muncher"
     user.save
 
     photo = Photo.new
     photo.owner_id = user.id
+    photo.image = user.id
     photo.save
 
     first_commenter = User.new
+    first_commenter.username = "first_mate"
     first_commenter.save
 
     first_comment = Comment.new
@@ -288,6 +295,7 @@ describe "/photos/[ID]" do
     first_comment.save
 
     second_commenter = User.new
+    second_commenter.username = "commmenter2"
     second_commenter.save
 
     second_comment = Comment.new
@@ -311,6 +319,7 @@ describe "/photos/[ID]" do
 
     photo = Photo.new
     photo.owner_id = user.id
+    photo.image = user.id
     photo.save
 
     first_commenter = User.new
@@ -374,21 +383,25 @@ describe "/users/[USERNAME]" do
     user.save
 
     other_user = User.new
+    other_user.username = "codnot"
     other_user.save
 
     first_photo = Photo.new
     first_photo.owner_id = user.id
     first_photo.caption = "First caption #{rand(100)}"
+    first_photo.image = "First caption #{rand(100)}"
     first_photo.save
 
     second_photo = Photo.new
     second_photo.owner_id = other_user.id
     second_photo.caption = "Second caption #{rand(100)}"
+    second_photo.image = "Second caption #{rand(100)}"
     second_photo.save
 
     third_photo = Photo.new
     third_photo.owner_id = user.id
     third_photo.caption = "Third caption #{rand(100)}"
+    third_photo.image = "Third caption #{rand(100)}"
     third_photo.save
 
     visit "/users/#{user.username}"
@@ -406,21 +419,25 @@ describe "/users/[USERNAME]/liked_photos" do
     user.save
 
     other_user = User.new
+    other_user.username = "camel_case"
     other_user.save
 
     first_photo = Photo.new
     first_photo.owner_id = other_user.id
     first_photo.caption = "First caption"
+    first_photo.image = "First caption"
     first_photo.save
 
     second_photo = Photo.new
     second_photo.owner_id = user.id
     second_photo.caption = "Second caption"
+    second_photo.image = "Second caption"
     second_photo.save
 
     third_photo = Photo.new
     third_photo.owner_id = other_user.id
     third_photo.caption = "Third caption"
+    third_photo.image = "Third caption"
     third_photo.save
 
     first_like = Like.new
@@ -453,51 +470,67 @@ describe "/users/[USERNAME]/feed" do
     user.save
 
     first_other_user = User.new
+    first_other_user.username = "the_girl_reading_this_is_beautiful"
     first_other_user.save
 
     first_other_user_first_photo = Photo.new
     first_other_user_first_photo.owner_id = first_other_user.id
     first_other_user_first_photo.caption = "Some caption z"
+    first_other_user_first_photo.image = "Some caption z"
     first_other_user_first_photo.save
+
     first_other_user_second_photo = Photo.new
     first_other_user_second_photo.owner_id = first_other_user.id
     first_other_user_second_photo.caption = "Some caption y"
+    first_other_user_second_photo.image = "Some caption y"
     first_other_user_second_photo.save
 
     second_other_user = User.new
+    second_other_user.username = "who_is_bernie_mac"
     second_other_user.save
 
     second_other_user_first_photo = Photo.new
     second_other_user_first_photo.owner_id = second_other_user.id
     second_other_user_first_photo.caption = "Some caption a"
+    second_other_user_first_photo.image = "Some image a"
     second_other_user_first_photo.save
+    
     second_other_user_second_photo = Photo.new
     second_other_user_second_photo.owner_id = second_other_user.id
     second_other_user_second_photo.caption = "Some caption b"
+    second_other_user_second_photo.image = "Some caption b"
     second_other_user_second_photo.save
 
     third_other_user = User.new
+    third_other_user.username = "jeporday"
     third_other_user.save
 
     third_other_user_first_photo = Photo.new
     third_other_user_first_photo.owner_id = third_other_user.id
     third_other_user_first_photo.caption = "Some caption c"
+    third_other_user_first_photo.image = "Some image c"
     third_other_user_first_photo.save
+
     third_other_user_second_photo = Photo.new
     third_other_user_second_photo.owner_id = third_other_user.id
     third_other_user_second_photo.caption = "Some caption d"
+    third_other_user_second_photo.image = "Some caption d"
     third_other_user_second_photo.save
 
     fourth_other_user = User.new
+    fourth_other_user.username = "nocat"
     fourth_other_user.save
 
     fourth_other_user_first_photo = Photo.new
     fourth_other_user_first_photo.owner_id = fourth_other_user.id
     fourth_other_user_first_photo.caption = "Some caption e"
+    fourth_other_user_first_photo.image = "Some image e"
     fourth_other_user_first_photo.save
+
     fourth_other_user_second_photo = Photo.new
     fourth_other_user_second_photo.owner_id = fourth_other_user.id
     fourth_other_user_second_photo.caption = "Some caption f"
+    fourth_other_user_second_photo.image = "Some image f"
     fourth_other_user_second_photo.save
 
     first_follow_request = FollowRequest.new
@@ -541,22 +574,27 @@ describe "/users/[USERNAME]/discover" do
     user = User.new
     user.username = "jelani_is_the_best_ta"
     user.save
-
+    
     first_other_user = User.new
+    first_other_user.username = "patrick_is_a_good_ta"
     first_other_user.save
-
+    
     second_other_user = User.new
+    second_other_user.username = "logan_is_a_ta"
     second_other_user.save
-
+    
     third_other_user = User.new
+    third_other_user.username = "give_me_free_cookies"
     third_other_user.save
-
+    
     fourth_other_user = User.new
+    fourth_other_user.username = "jelani_is_still_the_best_ta"
     fourth_other_user.save
 
     first_other_user_first_liked_photo = Photo.new
     first_other_user_first_liked_photo.owner_id = fourth_other_user.id
     first_other_user_first_liked_photo.caption = "Some caption #{1}"
+    first_other_user_first_liked_photo.image = "Someimage #{1}"
     first_other_user_first_liked_photo.save
 
     first_other_user_first_like = Like.new
@@ -567,6 +605,7 @@ describe "/users/[USERNAME]/discover" do
     first_other_user_second_liked_photo = Photo.new
     first_other_user_second_liked_photo.owner_id = fourth_other_user.id
     first_other_user_second_liked_photo.caption = "Some caption 2"
+    first_other_user_second_liked_photo.image = "Some caption 2"
     first_other_user_second_liked_photo.save
 
     first_other_user_first_like = Like.new
@@ -577,6 +616,7 @@ describe "/users/[USERNAME]/discover" do
     second_other_user_first_liked_photo = Photo.new
     second_other_user_first_liked_photo.owner_id = fourth_other_user.id
     second_other_user_first_liked_photo.caption = "Some caption 3"
+    second_other_user_first_liked_photo.image = "Some caption 3"
     second_other_user_first_liked_photo.save
 
     second_other_user_first_like = Like.new
@@ -587,6 +627,7 @@ describe "/users/[USERNAME]/discover" do
     second_other_user_second_liked_photo = Photo.new
     second_other_user_second_liked_photo.owner_id = fourth_other_user.id
     second_other_user_second_liked_photo.caption = "Some caption 4"
+    second_other_user_second_liked_photo.image = "Some caption 4"
     second_other_user_second_liked_photo.save
 
     second_other_user_first_like = Like.new
@@ -597,6 +638,7 @@ describe "/users/[USERNAME]/discover" do
     third_other_user_first_liked_photo = Photo.new
     third_other_user_first_liked_photo.owner_id = fourth_other_user.id
     third_other_user_first_liked_photo.caption = "Some caption 5"
+    third_other_user_first_liked_photo.image = "Some image 5"
     third_other_user_first_liked_photo.save
 
     third_other_user_first_like = Like.new
@@ -607,6 +649,7 @@ describe "/users/[USERNAME]/discover" do
     third_other_user_second_liked_photo = Photo.new
     third_other_user_second_liked_photo.owner_id = fourth_other_user.id
     third_other_user_second_liked_photo.caption = "Some caption 6"
+    third_other_user_second_liked_photo.image = "imagelink"
     third_other_user_second_liked_photo.save
 
     third_other_user_first_like = Like.new
@@ -617,6 +660,7 @@ describe "/users/[USERNAME]/discover" do
     fourth_other_user_first_liked_photo = Photo.new
     fourth_other_user_first_liked_photo.owner_id = fourth_other_user.id
     fourth_other_user_first_liked_photo.caption = "Some caption 7"
+    fourth_other_user_first_liked_photo.image = "Some caption 7"
     fourth_other_user_first_liked_photo.save
 
     fourth_other_user_first_like = Like.new
@@ -627,6 +671,7 @@ describe "/users/[USERNAME]/discover" do
     fourth_other_user_second_liked_photo = Photo.new
     fourth_other_user_second_liked_photo.owner_id = fourth_other_user.id
     fourth_other_user_second_liked_photo.caption = "Some caption 8"
+    fourth_other_user_second_liked_photo.image = "Somfiam 8"
     fourth_other_user_second_liked_photo.save
 
     fourth_other_user_first_like = Like.new
