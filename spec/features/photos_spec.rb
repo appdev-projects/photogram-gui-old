@@ -25,10 +25,10 @@ describe "/photos" do
 end
 
 describe "/photos" do
-  it "has one input element (for image)", points: 1, hint: h("label_for_input") do
+  it "has two input elements (for image and owner id)", points: 1, hint: h("label_for_input") do
     visit "/photos"
 
-    expect(page).to have_css("input", count: 1)
+    expect(page).to have_css("input", count: 2)
   end
 end
 
@@ -112,20 +112,24 @@ describe "/photos" do
 end
 
 describe "/photos" do
-  it "redirects to /recent when submitted", points: 1, hint: h("redirect_vs_render") do
+  it "redirects to /photos/[PHOTO ID] when submitted", points: 1, hint: h("redirect_vs_render") do
 
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
     visit "/photos"
 
+    user = User.new
+    user.username = "adora"
+    user.save
+
     fill_in "Image", with: test_image
     fill_in "Caption", with: test_caption
-    fill_in "Owner", with: second_other_user.id
+    fill_in "Owner ID", with: user.id
 
     click_on "Add photo"
 
-    expect(page).to have_current_path("/recent")
+    expect(page).to have_current_path("/photos/#{Photo.last.id}")
   end
 end
 
@@ -147,7 +151,7 @@ describe "/delete_photo/[PHOTO ID]" do
 end
 
 describe "/delete_photo/[PHOTO ID]" do
-  it "redirects to /users", points: 1, hint: h("redirect_vs_render") do
+  it "redirects to /photos", points: 1, hint: h("redirect_vs_render") do
 
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
@@ -159,24 +163,51 @@ describe "/delete_photo/[PHOTO ID]" do
 
     visit "/delete_photo/#{photo.id}"
 
-    expect(page).to have_current_path("/users")
+    expect(page).to have_current_path("/photos")
   end
 end
 
 describe "/photos/[ID]" do
-  it "has a form", points: 1 do
+  it "has at least one form", points: 1 do
 
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
     photo = Photo.new
     photo.image = test_image
+    photo.owner_id = user.id
     photo.caption = test_caption
     photo.save
 
     visit "/photos/#{photo.id}"
 
-    expect(page).to have_css("form", count: 1)
+    expect(page).to have_css("form", minimum: 1)
+  end
+end
+
+describe "/photos/[ID]" do
+  it "has all required forms", points: 1 do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
+    photo = Photo.new
+    photo.image = test_image
+    photo.owner_id = user.id
+    photo.caption = test_caption
+    photo.save
+
+    visit "/photos/#{photo.id}"
+
+    expect(page).to have_css("form", minimum: 3)
   end
 end
 
@@ -186,9 +217,14 @@ describe "/photos/[ID]" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     visit "/photos/#{photo.id}"
@@ -198,31 +234,19 @@ describe "/photos/[ID]" do
 end
 
 describe "/photos/[ID]" do
-  it "has one input (for image)", points: 1, hint: h("label_for_input") do
-
-    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
-    test_caption = "Some test caption #{Time.now.to_i}"
-
-    photo = Photo.new
-    photo.image = test_image
-    photo.caption = test_caption
-    photo.save
-
-    visit "/photos/#{photo.id}"
-
-    expect(page).to have_css("input", count: 1)
-  end
-end
-
-describe "/photos/[ID]" do
   it "has a label for 'Caption'", points: 1, hint: h("copy_must_match label_for_input") do
 
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     visit "/photos/#{photo.id}"
@@ -232,19 +256,25 @@ describe "/photos/[ID]" do
 end
 
 describe "/photos/[ID]" do
-  it "has one textarea (for caption)", points: 1, hint: h("label_for_input") do
+  it "has two textarea (for caption and comment)", points: 1, hint: h("label_for_input") do
 
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
     photo = Photo.new
     photo.image = test_image
+    photo.owner_id = user.id
     photo.caption = test_caption
     photo.save
 
     visit "/photos/#{photo.id}"
 
-    expect(page).to have_css("textarea", count: 1)
+    expect(page).to have_css("textarea", count: 2)
   end
 end
 
@@ -254,9 +284,14 @@ describe "/photos/[ID]" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     visit "/photos/#{photo.id}"
@@ -271,9 +306,14 @@ describe "/photos/[ID]" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     visit "/photos/#{photo.id}"
@@ -288,9 +328,15 @@ describe "/photos/[ID]" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     visit "/photos/#{photo.id}"
@@ -305,9 +351,15 @@ describe "/photos/[ID]" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     old_caption = "Some test caption #{Time.now.to_i}"
 
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
     photo = Photo.new
     photo.image = test_image
     photo.caption = old_caption
+    photo.owner_id = user.id
     photo.save
 
     new_caption = "New caption #{Time.now.to_i}"
@@ -328,9 +380,14 @@ describe "/photos/[ID]" do
     old_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
     photo = Photo.new
     photo.image = old_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     new_image = "http://new.image/image_#{Time.now.to_i}.jpg"
@@ -351,9 +408,14 @@ describe "/photos/[ID]" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     visit "/photos/#{photo.id}"
@@ -364,71 +426,24 @@ describe "/photos/[ID]" do
 end
 
 describe "/photos/[ID] — Add fan form" do
-  it "has a label for 'Person'", points: 1, hint: h("copy_must_match label_for_input") do
+  it "has a label for 'Author ID'", points: 1, hint: h("copy_must_match label_for_input") do
 
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     visit "/photos/#{photo.id}"
 
-    expect(page).to have_css("label", text: "Person")
-  end
-end
-
-describe "/photos/[ID] — Add fan form" do
-  it "has a dropdown containing usernames as visible options", points: 1 do
-
-    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
-    test_caption = "Some test caption #{Time.now.to_i}"
-
-    photo = Photo.new
-    photo.image = test_image
-    photo.caption = test_caption
-    photo.save
-
-    first_other_user = User.new
-    first_other_user.username = "bob_#{Time.now.to_i}"
-    first_other_user.save
-
-    second_other_user = User.new
-    second_other_user.username = "carol_#{Time.now.to_i}"
-    second_other_user.save
-
-    visit "/photos/#{photo.id}"
-
-    expect(page).to have_css("option", text: first_other_user.username)
-    expect(page).to have_css("option", text: second_other_user.username)
-  end
-end
-
-describe "/photos/[ID] — Add fan form" do
-  it "has a dropdown containing user IDs as values", points: 0 do
-
-    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
-    test_caption = "Some test caption #{Time.now.to_i}"
-
-    photo = Photo.new
-    photo.image = test_image
-    photo.caption = test_caption
-    photo.save
-
-    first_other_user = User.new
-    first_other_user.username = "bob_#{Time.now.to_i}"
-    first_other_user.save
-
-    second_other_user = User.new
-    second_other_user.username = "carol_#{Time.now.to_i}"
-    second_other_user.save
-
-    visit "/photos/#{photo.id}"
-
-    expect(page).to have_css("option[value='#{first_other_user.id}']")
-    expect(page).to have_css("option[value='#{second_other_user.id}']")
+    expect(page).to have_css("label", text: "Author ID")
   end
 end
 
@@ -438,9 +453,14 @@ describe "/photos/[ID] — Add fan form" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     visit "/photos/#{photo.id}"
@@ -455,9 +475,14 @@ describe "/photos/[ID] — Add fan form" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     visit "/photos/#{photo.id}"
@@ -472,9 +497,14 @@ describe "/photos/[ID] — Add fan form" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     first_other_user = User.new
@@ -487,7 +517,7 @@ describe "/photos/[ID] — Add fan form" do
 
     visit "/photos/#{photo.id}"
 
-    fill_in "Person", with: second_other_user.id
+    fill_in "Fan ID", with: second_other_user.id
 
     click_on "Add fan"
 
@@ -503,9 +533,14 @@ describe "/photos/[ID] — Add fan form" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     first_other_user = User.new
@@ -518,7 +553,7 @@ describe "/photos/[ID] — Add fan form" do
 
     visit "/photos/#{photo.id}"
 
-    fill_in "Person", with: second_other_user.id
+    fill_in "Author ID", with: second_other_user.id
 
     click_on "Add fan"
 
@@ -527,19 +562,24 @@ describe "/photos/[ID] — Add fan form" do
 end
 
 describe "/photos/[ID] — Add comment form" do
-  it "has a label for 'Commenter'", points: 1, hint: h("copy_must_match label_for_input") do
+  it "has a label for 'Author ID'", points: 1, hint: h("copy_must_match label_for_input") do
 
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
+    
+    user = User.new
+    user.username = "BagelFace"
+    user.save
 
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     visit "/photos/#{photo.id}"
 
-    expect(page).to have_css("label", text: "Commenter")
+    expect(page).to have_css("label", text: "Author ID")
   end
 end
 
@@ -549,9 +589,14 @@ describe "/photos/[ID] — Add comment form" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     visit "/photos/#{photo.id}"
@@ -566,9 +611,14 @@ describe "/photos/[ID] — Add comment form" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     visit "/photos/#{photo.id}"
@@ -583,9 +633,14 @@ describe "/photos/[ID] — Add comment form" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
 
+    user = User.new
+    user.username = "BagelFace"
+    user.save 
+
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = user.id
     photo.save
 
     visit "/photos/#{photo.id}"
@@ -600,15 +655,16 @@ describe "/photos/[ID] — Add comment form" do
     test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
     test_caption = "Some test caption #{Time.now.to_i}"
     test_comment = "Some new comment #{Time.now.to_i}"
+    
+    first_other_user = User.new
+    first_other_user.username = "bob_#{Time.now.to_i}"
+    first_other_user.save
 
     photo = Photo.new
     photo.image = test_image
     photo.caption = test_caption
+    photo.owner_id = first_other_user.id
     photo.save
-
-    first_other_user = User.new
-    first_other_user.username = "bob_#{Time.now.to_i}"
-    first_other_user.save
 
     second_other_user = User.new
     second_other_user.username = "carol_#{Time.now.to_i}"
@@ -617,7 +673,7 @@ describe "/photos/[ID] — Add comment form" do
     visit "/photos/#{photo.id}"
 
     fill_in "Comment", with: test_comment
-    fill_in "Person", with: second_other_user.id
+    fill_in "Author ID", with: second_other_user.id
 
     click_on "Add comment"
 
@@ -634,23 +690,23 @@ describe "/photos/[ID] — Add comment form" do
     test_caption = "Some test caption #{Time.now.to_i}"
     test_comment = "Some new comment #{Time.now.to_i}"
 
-    photo = Photo.new
-    photo.image = test_image
-    photo.caption = test_caption
-    photo.save
-
     first_other_user = User.new
     first_other_user.username = "bob_#{Time.now.to_i}"
     first_other_user.save
 
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = first_other_user.id
+    photo.save
+    
     second_other_user = User.new
     second_other_user.username = "carol_#{Time.now.to_i}"
     second_other_user.save
 
     visit "/photos/#{photo.id}"
-
     fill_in "Comment", with: test_comment
-    fill_in "Person", with: second_other_user.id
+    fill_in "Author ID", with: second_other_user.id
 
     click_on "Add comment"
 
