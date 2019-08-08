@@ -2,7 +2,9 @@ require "rails_helper"
 
 describe "/users/[username]" do
   it "has a functional RCAV", points: 1 do
-    user = create(:user)
+    user = User.new
+    user.username = "nasty_code_smeller_#{rand(100)}"
+    user.save
 
     visit "/users/#{user.username}"
 
@@ -13,7 +15,9 @@ end
 
 describe "/users/[username]" do
   it "displays the correct username", points: 1 do
-    user = create(:user)
+    user = User.new
+    user.username = "extreme_bagel_fan_#{rand(100)}"
+    user.save
 
     visit "/users/#{user.username}"
 
@@ -30,11 +34,31 @@ describe "/users" do
   end
 end
 
+describe "/users" do
+  it "displays all users", points: 1 do
+    user = User.new
+    user.username = "alice_#{rand(100)}"
+    user.save
+
+    user = User.new
+    user.username = "bob_#{rand(100)}"
+    user.save
+
+    visit "/users"
+
+    expect(page).to have_css("tr", minimum: 2)
+  end
+end
 
 describe "/users" do
   it "display multiple links to details pages", points: 1 do
-    create_list(:user, 2)
+    user = User.new
+    user.username = "alice_#{rand(100)}"
+    user.save
 
+    user = User.new
+    user.username = "bob_#{rand(100)}"
+    user.save
     visit "/users"
 
     expect(page).to have_css("a[href*='/users/']", minimum: 2)
@@ -73,18 +97,11 @@ describe "/users" do
   end
 end
 
-describe "/users" do
-  it "has two inputs", points: 1, hint: h("label_for_input") do
+
+describe "/users" do  it "has a button to 'Add user'", points: 1, hint: h("copy_must_match") do
     visit "/users"
 
-    expect(page).to have_css("input", count: 2)
-  end
-end
-
-describe "/users" do  it "has a button to 'Create Photo'", points: 1, hint: h("copy_must_match") do
-    visit "/users"
-
-    expect(page).to have_css("button", text: "Create Photo")
+    expect(page).to have_css("button", text: "Add user")
   end
 end
 
@@ -94,7 +111,7 @@ describe "/users" do
 
     visit "/users"
 
-    click_on "Create User"
+    click_on "Add user"
 
     final_number_of_users = User.count
 
@@ -104,11 +121,11 @@ end
 
 describe "/users" do
   it "saves the username when submitted", points: 1, hint: h("label_for_input") do
-    test_username = "photogram-gui-test-user-#{Time.now}."
+    test_username = "photogram-gui-test-user"
 
     visit "/users"
     fill_in("Username", with: test_username)
-    click_on "Create User"
+    click_on "Add user"
 
     last_user = User.order(created_at: :asc).last
     expect(last_user.username).to eq(test_username)
@@ -117,39 +134,23 @@ end
 
 
 describe "/users" do
-  it "redirects user to index when submitted", points: 1, hint: h("redirect_vs_render") do
+  it "redirects user to show page when submitted", points: 1, hint: h("redirect_vs_render") do
     visit "/users"
+    test_username = "macho_bagel"
 
-    click_on "Create User"
+    fill_in("Username", with: test_username)
 
-    expect(page).to have_current_path("/users")
-  end
-end
+    click_on "Add user"
 
-describe "/delete_user/[username]" do
-  it "removes a record from the table", points: 1 do
-    user = create(:user)
-
-    visit "/delete_user/#{user.username}"
-
-    expect(User.exists?(user.id)).to be false
-  end
-end
-
-describe "/delete_user/[username]" do
-  it "redirects user to the index page", points: 1, hint: h("redirect_vs_render") do
-    user = create(:user)
-
-    visit "/delete_user/#{user.username}"
-
-    expect(page).to have_current_path("/users")
+    expect(page).to have_current_path("/users/#{test_username}")
   end
 end
 
 describe "/users/[username]" do
   it "has a label for 'Username'", points: 1, hint: h("copy_must_match label_for_input") do
-    user = create(:user)
-
+    user = User.new
+    user.username = "alice_#{rand(100)}"
+    user.save
     visit "/users/#{user.username}"
 
     expect(page).to have_css("label", text: "Username")
@@ -158,18 +159,20 @@ end
 
 describe "/users/[username]" do
   it "has a label for 'Private'", points: 1, hint: h("copy_must_match label_for_input") do
-    user = create(:user)
-
+    user = User.new
+    user.username = "alice_#{rand(100)}"
+    user.save
     visit "/users/#{user.username}"
 
-    expect(page).to have_css("label", text: "Private")
+    expect(page).to have_css("label", text: "Private?")
   end
 end
 
 describe "/users/[username]" do
   it "has two inputs", points: 1, hint: h("label_for_input") do
-    user = create(:user)
-
+    user = User.new
+    user.username = "alice_#{rand(100)}"
+    user.save
     visit "/users/#{user.username}"
 
     expect(page).to have_css("input", count: 2)
@@ -177,18 +180,21 @@ describe "/users/[username]" do
 end
 
 describe "/users/[username]" do
-  it "has a button to 'Update User'", points: 1, hint: h("label_for_input") do
-    user = create(:user)
-
+  it "has a button to 'Update user'", points: 1, hint: h("label_for_input") do
+    user = User.new
+    user.username = "alice_#{rand(100)}"
+    user.save
     visit "/users/#{user.username}"
 
-    expect(page).to have_css("button", text: "Update User")
+    expect(page).to have_css("button", text: "Update user")
   end
 end
 
 describe "/users/[username]" do
   it "has username prepopulated", points: 1, hint: h("value_attribute") do
-    user = create(:user, username: "dannydevito4twenty")
+    user = User.new
+    user.username = "dannydevito4twenty"
+    user.save
 
     visit "/users/#{user.username}"
 
@@ -199,14 +205,17 @@ end
 
 describe "/users/[username]" do
   it "updates username when submitted", points: 1, hint: h("label_for_input button_type") do
-    user = create(:user, username: "old_user")
-    test_username = "new_user#{Time.now}"
+    user = User.new
+    user.username = "jeff_b_is_evil"
+    user.save
+
+    test_username = "new_user"
 
     visit "/users/#{user.username}"
     fill_in "Username", with: test_username
-    click_on "Update User"
+    click_on "Update user"
 
-    user_as_revised = User.where(username: user.username).first
+    user_as_revised = User.where(id: user.id).first
 
     expect(user_as_revised.username).to eq(test_username)
   end
@@ -215,10 +224,12 @@ end
 
 describe "/patch_user/[username]" do
   it "redirects user to the show page", points: 1, hint: h("embed_vs_interpolate redirect_vs_render") do
-    user = create(:user)
+    user = User.new
+    user.username = "alice_#{rand(100)}"
+    user.save
 
     visit "/users/#{user.username}"
-    click_on "Update Photo"
+    click_on "Update user"
 
     expect(page).to have_current_path("/users/#{user.username}")
   end
@@ -232,7 +243,7 @@ describe "/photos/[ID]" do
     user.save
 
     photo = Photo.new
-    photo.owner_id = user.username
+    photo.owner_id = user.id
     photo.caption = "Some caption #{rand(100)}"
     photo.save
 
@@ -249,7 +260,7 @@ describe "/photos/[ID]" do
     user.save
 
     photo = Photo.new
-    photo.owner_id = user.username
+    photo.owner_id = user.id
     photo.save
 
     visit "/photos/#{photo.id}"
@@ -264,7 +275,7 @@ describe "/photos/[ID]" do
     user.save
 
     photo = Photo.new
-    photo.owner_id = user.username
+    photo.owner_id = user.id
     photo.save
 
     first_commenter = User.new
@@ -295,10 +306,11 @@ end
 describe "/photos/[ID]" do
   it "has the usernames of commenters on the photo" do
     user = User.new
+    user.username = "strong_bad"
     user.save
 
     photo = Photo.new
-    photo.owner_id = user.username
+    photo.owner_id = user.id
     photo.save
 
     first_commenter = User.new
@@ -358,23 +370,24 @@ end
 describe "/users/[USERNAME]" do
   it "has the photos posted by the user", :points => 1 do
     user = User.new
+    user.username = "paul_bunyun"
     user.save
 
     other_user = User.new
     other_user.save
 
     first_photo = Photo.new
-    first_photo.owner_id = user.username
+    first_photo.owner_id = user.id
     first_photo.caption = "First caption #{rand(100)}"
     first_photo.save
 
     second_photo = Photo.new
-    second_photo.owner_id = other_user.username
+    second_photo.owner_id = other_user.id
     second_photo.caption = "Second caption #{rand(100)}"
     second_photo.save
 
     third_photo = Photo.new
-    third_photo.owner_id = user.username
+    third_photo.owner_id = user.id
     third_photo.caption = "Third caption #{rand(100)}"
     third_photo.save
 
@@ -389,39 +402,40 @@ end
 describe "/users/[USERNAME]/liked_photos" do
   it "has the photos the user has liked", :points => 2 do
     user = User.new
+    user.username = "you_can_do_this"
     user.save
 
     other_user = User.new
     other_user.save
 
     first_photo = Photo.new
-    first_photo.owner_id = other_user.username
-    first_photo.caption = "Some caption #{rand(100)}"
+    first_photo.owner_id = other_user.id
+    first_photo.caption = "First caption"
     first_photo.save
 
     second_photo = Photo.new
-    second_photo.owner_id = user.username
-    second_photo.caption = "Some caption #{rand(100)}"
+    second_photo.owner_id = user.id
+    second_photo.caption = "Second caption"
     second_photo.save
 
     third_photo = Photo.new
-    third_photo.owner_id = other_user.username
-    third_photo.caption = "Some caption #{rand(100)}"
+    third_photo.owner_id = other_user.id
+    third_photo.caption = "Third caption"
     third_photo.save
 
     first_like = Like.new
     first_like.photo_id = first_photo.id
-    first_like.fan_id = user.username
+    first_like.fan_id = user.id
     first_like.save
 
     second_like = Like.new
     second_like.photo_id = second_photo.id
-    second_like.fan_id = other_user.username
+    second_like.fan_id = other_user.id
     second_like.save
 
     third_like = Like.new
     third_like.photo_id = third_photo.id
-    third_like.fan_id = user.username
+    third_like.fan_id = user.id
     third_like.save
 
     visit "/users/#{user.username}/liked_photos"
@@ -435,77 +449,78 @@ end
 describe "/users/[USERNAME]/feed" do
   it "has the photos posted by the people the user is following", :points => 4 do
     user = User.new
+    user.username = "believe_in_yourself"
     user.save
 
     first_other_user = User.new
     first_other_user.save
 
     first_other_user_first_photo = Photo.new
-    first_other_user_first_photo.owner_id = first_other_user.username
-    first_other_user_first_photo.caption = "Some caption #{rand(100)}"
+    first_other_user_first_photo.owner_id = first_other_user.id
+    first_other_user_first_photo.caption = "Some caption z"
     first_other_user_first_photo.save
     first_other_user_second_photo = Photo.new
-    first_other_user_second_photo.owner_id = first_other_user.username
-    first_other_user_second_photo.caption = "Some caption #{rand(100)}"
+    first_other_user_second_photo.owner_id = first_other_user.id
+    first_other_user_second_photo.caption = "Some caption y"
     first_other_user_second_photo.save
 
     second_other_user = User.new
     second_other_user.save
 
     second_other_user_first_photo = Photo.new
-    second_other_user_first_photo.owner_id = second_other_user.username
-    second_other_user_first_photo.caption = "Some caption #{rand(100)}"
+    second_other_user_first_photo.owner_id = second_other_user.id
+    second_other_user_first_photo.caption = "Some caption a"
     second_other_user_first_photo.save
     second_other_user_second_photo = Photo.new
-    second_other_user_second_photo.owner_id = second_other_user.username
-    second_other_user_second_photo.caption = "Some caption #{rand(100)}"
+    second_other_user_second_photo.owner_id = second_other_user.id
+    second_other_user_second_photo.caption = "Some caption b"
     second_other_user_second_photo.save
 
     third_other_user = User.new
     third_other_user.save
 
     third_other_user_first_photo = Photo.new
-    third_other_user_first_photo.owner_id = third_other_user.username
-    third_other_user_first_photo.caption = "Some caption #{rand(100)}"
+    third_other_user_first_photo.owner_id = third_other_user.id
+    third_other_user_first_photo.caption = "Some caption c"
     third_other_user_first_photo.save
     third_other_user_second_photo = Photo.new
-    third_other_user_second_photo.owner_id = third_other_user.username
-    third_other_user_second_photo.caption = "Some caption #{rand(100)}"
+    third_other_user_second_photo.owner_id = third_other_user.id
+    third_other_user_second_photo.caption = "Some caption d"
     third_other_user_second_photo.save
 
     fourth_other_user = User.new
     fourth_other_user.save
 
     fourth_other_user_first_photo = Photo.new
-    fourth_other_user_first_photo.owner_id = fourth_other_user.username
-    fourth_other_user_first_photo.caption = "Some caption #{rand(100)}"
+    fourth_other_user_first_photo.owner_id = fourth_other_user.id
+    fourth_other_user_first_photo.caption = "Some caption e"
     fourth_other_user_first_photo.save
     fourth_other_user_second_photo = Photo.new
-    fourth_other_user_second_photo.owner_id = fourth_other_user.username
-    fourth_other_user_second_photo.caption = "Some caption #{rand(100)}"
+    fourth_other_user_second_photo.owner_id = fourth_other_user.id
+    fourth_other_user_second_photo.caption = "Some caption f"
     fourth_other_user_second_photo.save
 
     first_follow_request = FollowRequest.new
-    first_follow_request.sender_id = user.username
-    first_follow_request.recipient_id = first_other_user.username
+    first_follow_request.sender_id = user.id
+    first_follow_request.recipient_id = first_other_user.id
     first_follow_request.status = "rejected"
     first_follow_request.save
 
     second_follow_request = FollowRequest.new
-    second_follow_request.sender_id = user.username
-    second_follow_request.recipient_id = second_other_user.username
+    second_follow_request.sender_id = user.id
+    second_follow_request.recipient_id = second_other_user.id
     second_follow_request.status = "accepted"
     second_follow_request.save
 
     third_follow_request = FollowRequest.new
-    third_follow_request.sender_id = user.username
-    third_follow_request.recipient_id = third_other_user.username
+    third_follow_request.sender_id = user.id
+    third_follow_request.recipient_id = third_other_user.id
     third_follow_request.status = "pending"
     third_follow_request.save
 
     fourth_follow_request = FollowRequest.new
-    fourth_follow_request.sender_id = user.username
-    fourth_follow_request.recipient_id = fourth_other_user.username
+    fourth_follow_request.sender_id = user.id
+    fourth_follow_request.recipient_id = fourth_other_user.id
     fourth_follow_request.status = "accepted"
     fourth_follow_request.save
 
@@ -524,6 +539,7 @@ end
 describe "/users/[USERNAME]/discover" do
   it "has the photos that are liked by the people the user is following", :points => 4 do
     user = User.new
+    user.username = "jelani_is_the_best_ta"
     user.save
 
     first_other_user = User.new
@@ -539,106 +555,106 @@ describe "/users/[USERNAME]/discover" do
     fourth_other_user.save
 
     first_other_user_first_liked_photo = Photo.new
-    first_other_user_first_liked_photo.owner_id = fourth_other_user.username
-    first_other_user_first_liked_photo.caption = "Some caption #{rand(100)}"
+    first_other_user_first_liked_photo.owner_id = fourth_other_user.id
+    first_other_user_first_liked_photo.caption = "Some caption #{1}"
     first_other_user_first_liked_photo.save
 
     first_other_user_first_like = Like.new
-    first_other_user_first_like.fan_id = first_other_user.username
+    first_other_user_first_like.fan_id = first_other_user.id
     first_other_user_first_like.photo_id = first_other_user_first_liked_photo.id
     first_other_user_first_like.save
 
     first_other_user_second_liked_photo = Photo.new
-    first_other_user_second_liked_photo.owner_id = fourth_other_user.username
-    first_other_user_second_liked_photo.caption = "Some caption #{rand(100)}"
+    first_other_user_second_liked_photo.owner_id = fourth_other_user.id
+    first_other_user_second_liked_photo.caption = "Some caption 2"
     first_other_user_second_liked_photo.save
 
     first_other_user_first_like = Like.new
-    first_other_user_first_like.fan_id = first_other_user.username
+    first_other_user_first_like.fan_id = first_other_user.id
     first_other_user_first_like.photo_id = first_other_user_second_liked_photo.id
     first_other_user_first_like.save
 
     second_other_user_first_liked_photo = Photo.new
-    second_other_user_first_liked_photo.owner_id = fourth_other_user.username
-    second_other_user_first_liked_photo.caption = "Some caption #{rand(100)}"
+    second_other_user_first_liked_photo.owner_id = fourth_other_user.id
+    second_other_user_first_liked_photo.caption = "Some caption 3"
     second_other_user_first_liked_photo.save
 
     second_other_user_first_like = Like.new
-    second_other_user_first_like.fan_id = second_other_user.username
+    second_other_user_first_like.fan_id = second_other_user.id
     second_other_user_first_like.photo_id = second_other_user_first_liked_photo.id
     second_other_user_first_like.save
 
     second_other_user_second_liked_photo = Photo.new
-    second_other_user_second_liked_photo.owner_id = fourth_other_user.username
-    second_other_user_second_liked_photo.caption = "Some caption #{rand(100)}"
+    second_other_user_second_liked_photo.owner_id = fourth_other_user.id
+    second_other_user_second_liked_photo.caption = "Some caption 4"
     second_other_user_second_liked_photo.save
 
     second_other_user_first_like = Like.new
-    second_other_user_first_like.fan_id = second_other_user.username
+    second_other_user_first_like.fan_id = second_other_user.id
     second_other_user_first_like.photo_id = second_other_user_second_liked_photo.id
     second_other_user_first_like.save
 
     third_other_user_first_liked_photo = Photo.new
-    third_other_user_first_liked_photo.owner_id = fourth_other_user.username
-    third_other_user_first_liked_photo.caption = "Some caption #{rand(100)}"
+    third_other_user_first_liked_photo.owner_id = fourth_other_user.id
+    third_other_user_first_liked_photo.caption = "Some caption 5"
     third_other_user_first_liked_photo.save
 
     third_other_user_first_like = Like.new
-    third_other_user_first_like.fan_id = third_other_user.username
+    third_other_user_first_like.fan_id = third_other_user.id
     third_other_user_first_like.photo_id = third_other_user_first_liked_photo.id
     third_other_user_first_like.save
 
     third_other_user_second_liked_photo = Photo.new
-    third_other_user_second_liked_photo.owner_id = fourth_other_user.username
-    third_other_user_second_liked_photo.caption = "Some caption #{rand(100)}"
+    third_other_user_second_liked_photo.owner_id = fourth_other_user.id
+    third_other_user_second_liked_photo.caption = "Some caption 6"
     third_other_user_second_liked_photo.save
 
     third_other_user_first_like = Like.new
-    third_other_user_first_like.fan_id = third_other_user.username
+    third_other_user_first_like.fan_id = third_other_user.id
     third_other_user_first_like.photo_id = third_other_user_second_liked_photo.id
     third_other_user_first_like.save
 
     fourth_other_user_first_liked_photo = Photo.new
-    fourth_other_user_first_liked_photo.owner_id = fourth_other_user.username
-    fourth_other_user_first_liked_photo.caption = "Some caption #{rand(100)}"
+    fourth_other_user_first_liked_photo.owner_id = fourth_other_user.id
+    fourth_other_user_first_liked_photo.caption = "Some caption 7"
     fourth_other_user_first_liked_photo.save
 
     fourth_other_user_first_like = Like.new
-    fourth_other_user_first_like.fan_id = fourth_other_user.username
+    fourth_other_user_first_like.fan_id = fourth_other_user.id
     fourth_other_user_first_like.photo_id = fourth_other_user_first_liked_photo.id
     fourth_other_user_first_like.save
 
     fourth_other_user_second_liked_photo = Photo.new
-    fourth_other_user_second_liked_photo.owner_id = fourth_other_user.username
-    fourth_other_user_second_liked_photo.caption = "Some caption #{rand(100)}"
+    fourth_other_user_second_liked_photo.owner_id = fourth_other_user.id
+    fourth_other_user_second_liked_photo.caption = "Some caption 8"
     fourth_other_user_second_liked_photo.save
 
     fourth_other_user_first_like = Like.new
-    fourth_other_user_first_like.fan_id = fourth_other_user.username
+    fourth_other_user_first_like.fan_id = fourth_other_user.id
     fourth_other_user_first_like.photo_id = fourth_other_user_second_liked_photo.id
     fourth_other_user_first_like.save
 
     first_follow_request = FollowRequest.new
-    first_follow_request.sender_id = user.username
-    first_follow_request.recipient_id = first_other_user.username
+    first_follow_request.sender_id = user.id
+    first_follow_request.recipient_id = first_other_user.id
     first_follow_request.status = "rejected"
     first_follow_request.save
 
     second_follow_request = FollowRequest.new
-    second_follow_request.sender_id = user.username
-    second_follow_request.recipient_id = second_other_user.username
+    second_follow_request.sender_id = user.id
+    second_follow_request.recipient_id = second_other_user.id
     second_follow_request.status = "accepted"
     second_follow_request.save
 
     third_follow_request = FollowRequest.new
-    third_follow_request.sender_id = user.username
-    third_follow_request.recipient_id = third_other_user.username
+    third_follow_request.sender_id = user.id
+    third_follow_request.recipient_id = third_other_user.id
     third_follow_request.status = "pending"
     third_follow_request.save
 
     fourth_follow_request = FollowRequest.new
-    fourth_follow_request.sender_id = user.username
-    fourth_follow_request.recipient_id = fourth_other_user.username
+    fourth_follow_request.sender_id = user.id
+    fourth_follow_request.recipient_id = fourth_other_user.id
     fourth_follow_request.status = "accepted"
     fourth_follow_request.save
 
