@@ -37,8 +37,16 @@ class UsersController < ApplicationController
     user.comments_count = params.fetch(:qs_comments_count, 0)
     
     user.save
+    
+    respond_to do |format|
+      format.json do
+        render({ :json => @user.as_json })
+      end
 
-    render({ :json => user.as_json })
+      format.html do
+        redirect_to("/users/#{user.username}")
+      end
+    end
   end
 
   def update

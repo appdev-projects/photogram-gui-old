@@ -13,7 +13,7 @@
 
   <dt>Owner</dt>
   <dd>
-    Anisa
+    <%= @photo.poster.username %>
   </dd>
 
   <dt>Posted</dt>
@@ -35,7 +35,7 @@
       <label for="browser_fan_id">Fan ID</label>
       <input id="browser_fan_id" type="text" name="qs_fan_id">
 
-      <button>Add Fan</button>
+      <button>Add fan</button>
     </form>
   </dd>
 
@@ -92,7 +92,7 @@
   <label for="browser_photo_id">Photo ID</label>
   <input id="browser_photo_id" type="text" value="<%= @photo.id %>" name="qs_photo_id">
   
-  <label for="browser_author_id">Fan ID</label>
+  <label for="browser_author_id">Author ID</label>
   <input id="browser_author_id" type="text" name="qs_author_id">
 
   <label for="browser_comment">Comment</label>

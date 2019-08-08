@@ -45,7 +45,7 @@ class PhotosController < ApplicationController
       end
 
       format.html do
-        redirect_to("/photos")
+        redirect_to("/photos/#{photo.id}")
       end
     end
   end
@@ -80,8 +80,15 @@ class PhotosController < ApplicationController
 
     photo.destroy
 
-    render({ :json => photo.as_json })
-  end
+    respond_to do |format|
+      format.json do
+        render({ :json => photo.as_json })
+      end
+
+      format.html do
+        redirect_to("/photos")
+      end
+    end  end
  
   def comments
     the_id = params.fetch(:rt_photo_id)

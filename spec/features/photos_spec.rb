@@ -1,115 +1,5 @@
 require "rails_helper"
 
-describe "/photos/[PHOTO ID]" do
-  it "has a functional RCAV", points: 1 do
-    photo = create(:photo)
-
-    visit "/photos/#{photo.id}"
-
-    expect(page.status_code).to be(200)
-  end
-end
-
-describe "/photos/[PHOTO ID]" do
-  it "has a p tag for the caption", points: 1 do
-    photo = create(:photo)
-
-    visit "/photos/#{photo.id}"
-
-    expect(page).to have_css("p")
-  end
-end
-
-describe "/photos/[PHOTO ID]" do
-  it "has an img tag for the image", points: 1 do
-    photo = create(:photo)
-
-    visit "/photos/#{photo.id}"
-
-    expect(page).to have_css("img")
-  end
-end
-
-describe "/photos/[PHOTO ID]" do
-  it "displays the correct caption", points: 3 do
-    photo = create(:photo)
-
-    visit "/photos/#{photo.id}"
-
-    expect(page).to have_content(photo.caption)
-  end
-end
-
-describe "/photos/[PHOTO ID]" do
-  it "displays the correct image", points: 3 do
-    photo = create(:photo)
-
-    visit "/photos/#{photo.id}"
-
-    expect(page).to have_css("img[src*='#{photo.image}']")
-  end
-end
-
-describe "/photos" do
-  it "has a functional Route Controller Action View", points: 1 do
-    visit "/photos"
-
-    expect(page.status_code).to be(200)
-  end
-end
-
-describe "/photos" do
-  it "displays multiple photos", points: 1 do
-    create_list(:photo, 2)
-
-    visit "/photos"
-
-    expect(page).to have_css("img", minimum: 2)
-  end
-end
-
-describe "/photos" do
-  it "display multiple links to details pages", points: 1 do
-    create_list(:photo, 2)
-
-    visit "/photos"
-
-    expect(page).to have_css("a[href*='/photos/']", minimum: 2)
-  end
-end
-
-describe "/photos" do
-  it "displays actual existing photos", points: 5 do
-    photos = create_list(:photo, 5)
-
-    visit "/photos"
-
-    photos.each do |photo|
-      expect(page).to have_css("img[src*='#{photo.image}']")
-    end
-  end
-end
-
-describe "/photos" do
-  it "displays a link to the details page for every existing photo", points: 5 do
-    photos = create_list(:photo, 5)
-
-    visit "/photos"
-
-    photos.each do |photo|
-      expect(page).to have_css("img[src*='#{photo.image}']")
-    end
-  end
-end
-
-describe "Root URL" do
-  it "is the photos index page", points: 3, hint: h("copy_must_match") do
-    visit "/"
-
-    expect(page).to have_css("h1", text: "All Photos")
-  end
-end
-
 describe "/photos" do
   it "has a functional RCAV", points: 1 do
     visit "/photos"
@@ -127,6 +17,22 @@ describe "/photos" do
 end
 
 describe "/photos" do
+  it "has a label for 'Image'", points: 1, hint: h("copy_must_match label_for_input") do
+    visit "/photos"
+
+    expect(page).to have_css("label", text: "Image")
+  end
+end
+
+describe "/photos" do
+  it "has two input elements (for image and owner id)", points: 1, hint: h("label_for_input") do
+    visit "/photos"
+
+    expect(page).to have_css("input", count: 2)
+  end
+end
+
+describe "/photos" do
   it "has a label for 'Caption'", points: 1, hint: h("copy_must_match label_for_input") do
     visit "/photos"
 
@@ -135,35 +41,33 @@ describe "/photos" do
 end
 
 describe "/photos" do
-  it "has a label for 'Image URL'", points: 1, hint: h("copy_must_match label_for_input") do
+  it "has one textarea element (for caption)", points: 1, hint: h("label_for_input") do
     visit "/photos"
 
-    expect(page).to have_css("label", text: "Image URL")
+    expect(page).to have_css("textarea", count: 1)
+  end
+end
+
+describe "/photos" do  it "has a button that says 'Add photo'", points: 1, hint: h("copy_must_match") do
+    visit "/photos"
+
+    expect(page).to have_css("button", text: "Add photo")
   end
 end
 
 describe "/photos" do
-  it "has two inputs", points: 1, hint: h("label_for_input") do
-    visit "/photos"
-
-    expect(page).to have_css("input", count: 2)
-  end
-end
-
-describe "/photos" do  it "has a button to 'Create Photo'", points: 1, hint: h("copy_must_match") do
-    visit "/photos"
-
-    expect(page).to have_css("button", text: "Create Photo")
-  end
-end
-
-describe "/photos" do
-  it "creates a photo when submitted", points: 3, hint: h("button_type") do
+  it "creates a photo when submitted", points: 1, hint: h("button_type") do
     initial_number_of_photos = Photo.count
 
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
     visit "/photos"
 
-    click_on "Create Photo"
+    fill_in "Image", with: test_image
+    fill_in "Caption", with: test_caption
+
+    click_on "Add photo"
 
     final_number_of_photos = Photo.count
 
@@ -172,12 +76,17 @@ describe "/photos" do
 end
 
 describe "/photos" do
-  it "saves the caption when submitted", points: 2, hint: h("label_for_input") do
-    test_caption = "Photogram test caption, added at time #{Time.now}."
+  it "saves the caption when submitted", points: 1, hint: h("label_for_input") do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
 
     visit "/photos"
-    fill_in("Caption", with: test_caption)
-    click_on "Create Photo"
+
+    fill_in "Image", with: test_image
+    fill_in "Caption", with: test_caption
+
+    click_on "Add photo"
 
     last_photo = Photo.order(created_at: :asc).last
     expect(last_photo.caption).to eq(test_caption)
@@ -185,12 +94,17 @@ describe "/photos" do
 end
 
 describe "/photos" do
-  it "saves the image URL when submitted", points: 2, hint: h("label_for_input") do
-    test_image = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Pluto-01_Stern_03_Pluto_Color_TXT.jpg/240px-Pluto-01_Stern_03_Pluto_Color_TXT.jpg"
+  it "saves the image URL when submitted", points: 1, hint: h("label_for_input") do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
 
     visit "/photos"
-    fill_in("Image URL", with: test_image)
-    click_on "Create Photo"
+
+    fill_in "Image", with: test_image
+    fill_in "Caption", with: test_caption
+
+    click_on "Add photo"
 
     last_photo = Photo.order(created_at: :asc).last
     expect(last_photo.image).to eq(test_image)
@@ -198,58 +112,142 @@ describe "/photos" do
 end
 
 describe "/photos" do
-  it "redirects user to index when submitted", points: 2, hint: h("redirect_vs_render") do
+  it "redirects to /photos/[PHOTO ID] when submitted", points: 1, hint: h("redirect_vs_render") do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
     visit "/photos"
 
-    click_on "Create Photo"
+    user = User.new
+    user.username = "adora"
+    user.save
+
+    fill_in "Image", with: test_image
+    fill_in "Caption", with: test_caption
+    fill_in "Owner ID", with: user.id
+
+    click_on "Add photo"
+
+    expect(page).to have_current_path("/photos/#{Photo.last.id}")
+  end
+end
+
+describe "/delete_photo/[PHOTO ID]" do
+  it "removes a record from the Photo table", points: 1 do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.save
+
+    visit "/delete_photo/#{photo.id}"
+
+    expect(Photo.exists?(photo.id)).to be(false)
+  end
+end
+
+describe "/delete_photo/[PHOTO ID]" do
+  it "redirects to /photos", points: 1, hint: h("redirect_vs_render") do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.save
+
+    visit "/delete_photo/#{photo.id}"
 
     expect(page).to have_current_path("/photos")
   end
 end
 
-describe "/delete_photo/[PHOTO ID]" do
-  it "removes a row from the table", points: 5 do
-    photo = create(:photo)
+describe "/photos/[ID]" do
+  it "has at least one form", points: 1 do
 
-    visit "/delete_photo/#{photo.id}"
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
 
-    expect(Photo.exists?(photo.id)).to be false
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
+    photo = Photo.new
+    photo.image = test_image
+    photo.owner_id = user.id
+    photo.caption = test_caption
+    photo.save
+
+    visit "/photos/#{photo.id}"
+
+    expect(page).to have_css("form", minimum: 1)
   end
 end
 
-describe "/delete_photo/[PHOTO ID]" do
-  it "redirects user to the index page", points: 3, hint: h("redirect_vs_render") do
-    photo = create(:photo)
+describe "/photos/[ID]" do
+  it "has all required forms", points: 1 do
 
-    visit "/delete_photo/#{photo.id}"
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
 
-    expect(page).to have_current_path("/photos")
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
+    photo = Photo.new
+    photo.image = test_image
+    photo.owner_id = user.id
+    photo.caption = test_caption
+    photo.save
+
+    visit "/photos/#{photo.id}"
+
+    expect(page).to have_css("form", minimum: 3)
   end
 end
 
-describe "/photos/[PHOTO ID]/edit" do
-  it "has a functional RCAV", points: 1 do
-    photo = create(:photo)
+describe "/photos/[ID]" do
+  it "has a label for 'Image'", points: 1, hint: h("copy_must_match label_for_input") do
+ 
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
 
-    visit "/photos/#{photo.id}/edit"
+    user = User.new
+    user.username = "BagelFace"
+    user.save
 
-    expect(page.status_code).to be(200)
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = user.id
+    photo.save
+
+    visit "/photos/#{photo.id}"
+
+    expect(page).to have_css("label", text: "Image")
   end
 end
 
-describe "/photos/[PHOTO ID]/edit" do
-  it "has a form", points: 1 do
-    photo = create(:photo)
-
-    visit "/photos/#{photo.id}/edit"
-
-    expect(page).to have_css("form", count: 1)
-  end
-end
-
-describe "/photos/[PHOTO ID]" do
+describe "/photos/[ID]" do
   it "has a label for 'Caption'", points: 1, hint: h("copy_must_match label_for_input") do
-    photo = create(:photo)
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = user.id
+    photo.save
 
     visit "/photos/#{photo.id}"
 
@@ -257,92 +255,460 @@ describe "/photos/[PHOTO ID]" do
   end
 end
 
-describe "/photos/[PHOTO ID]" do
-  it "has a label for 'Image URL'", points: 1, hint: h("copy_must_match label_for_input") do
-    photo = create(:photo)
+describe "/photos/[ID]" do
+  it "has two textarea (for caption and comment)", points: 1, hint: h("label_for_input") do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
+    photo = Photo.new
+    photo.image = test_image
+    photo.owner_id = user.id
+    photo.caption = test_caption
+    photo.save
 
     visit "/photos/#{photo.id}"
 
-    expect(page).to have_css("label", text: "Image URL")
+    expect(page).to have_css("textarea", count: 2)
   end
 end
 
-describe "/photos/[PHOTO ID]" do
-  it "has two inputs", points: 1, hint: h("label_for_input") do
-    photo = create(:photo)
+describe "/photos/[ID]" do
+  it "has a button that says 'Update photo'", points: 1, hint: h("label_for_input") do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = user.id
+    photo.save
 
     visit "/photos/#{photo.id}"
 
-    expect(page).to have_css("input", count: 2)
+    expect(page).to have_css("button", text: "Update photo")
   end
 end
 
-describe "/photos/[PHOTO ID]" do
-  it "has a button to 'Update Photo'", points: 1, hint: h("label_for_input") do
-    photo = create(:photo)
+describe "/photos/[ID]" do
+  it "has image input prepopulated", points: 1, hint: h("value_attribute") do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = user.id
+    photo.save
 
     visit "/photos/#{photo.id}"
 
-    expect(page).to have_css("button", text: "Update Photo")
+    expect(page).to have_css("input[value='#{test_image}']")
   end
 end
 
-describe "/photos/[PHOTO ID]" do
-  it "has caption prepopulated", points: 3, hint: h("value_attribute") do
-    photo = create(:photo, caption: "Some pre-existing caption")
+describe "/photos/[ID]" do
+  it "has caption textarea prepopulated", points: 1, hint: h("prepopulate_textarea") do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = user.id
+    photo.save
 
     visit "/photos/#{photo.id}"
 
-    expect(page).to have_css("input[value='Some pre-existing caption']")
+    expect(page).to have_content(test_caption)
   end
 end
 
-describe "/photos/[PHOTO ID]" do
-  it "has image image prepopulated", points: 3, hint: h("value_attribute") do
-    photo = create(:photo, image: "http://some.pre-existing.image/image.jpg")
+describe "/photos/[ID]" do
+  it "updates caption when submitted", points: 1, hint: h("label_for_input button_type") do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    old_caption = "Some test caption #{Time.now.to_i}"
+
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = old_caption
+    photo.owner_id = user.id
+    photo.save
+
+    new_caption = "New caption #{Time.now.to_i}"
 
     visit "/photos/#{photo.id}"
-
-    expect(page).to have_css("input[value='http://some.pre-existing.image/image.jpg']")
-  end
-end
-
-describe "/photos/[PHOTO ID]" do
-  it "updates caption when submitted", points: 5, hint: h("label_for_input button_type") do
-    photo = create(:photo, caption: "Old caption")
-    test_caption = "New caption, added at #{Time.now}"
-
-    visit "/photos/#{photo.id}"
-    fill_in "Caption", with: test_caption
-    click_on "Update Photo"
+    fill_in "Caption", with: new_caption
+    click_on "Update photo"
 
     photo_as_revised = Photo.find(photo.id)
 
-    expect(photo_as_revised.caption).to eq(test_caption)
+    expect(photo_as_revised.caption).to eq(new_caption)
   end
 end
 
-describe "/photos/[PHOTO ID]" do
-  it "updates image image when submitted", points: 5, hint: h("label_for_input button_type") do
-    photo = create(:photo, image: "http://old.image/image.jpg")
-    test_image = "http://new.image/image_#{Time.now.to_i}.jpg"
+describe "/photos/[ID]" do
+  it "updates image image when submitted", points: 1, hint: h("label_for_input button_type") do
+
+    old_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
+    photo = Photo.new
+    photo.image = old_image
+    photo.caption = test_caption
+    photo.owner_id = user.id
+    photo.save
+
+    new_image = "http://new.image/image_#{Time.now.to_i}.jpg"
 
     visit "/photos/#{photo.id}"
-    fill_in "Image URL", with: test_image
-    click_on "Update Photo"
+    fill_in "Image", with: new_image
+    click_on "Update photo"
 
     photo_as_revised = Photo.find(photo.id)
 
-    expect(photo_as_revised.image).to eq(test_image)
+    expect(photo_as_revised.image).to eq(new_image)
   end
 end
 
-describe "/patch_photo/[PHOTO ID]" do
-  it "redirects user to the show page", points: 3, hint: h("embed_vs_interpolate redirect_vs_render") do
-    photo = create(:photo)
+describe "/photos/[ID]" do
+  it "redirects to the photo's details page", points: 1, hint: h("embed_vs_interpolate redirect_vs_render") do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = user.id
+    photo.save
 
     visit "/photos/#{photo.id}"
-    click_on "Update Photo"
+    click_on "Update photo"
+
+    expect(page).to have_current_path("/photos/#{photo.id}")
+  end
+end
+
+describe "/photos/[ID] — Add fan form" do
+  it "has a label for 'Author ID'", points: 1, hint: h("copy_must_match label_for_input") do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+    
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = user.id
+    photo.save
+
+    visit "/photos/#{photo.id}"
+
+    expect(page).to have_css("label", text: "Author ID")
+  end
+end
+
+describe "/photos/[ID] — Add fan form" do
+  it "has an input containing the photo's ID", points: 0 do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = user.id
+    photo.save
+
+    visit "/photos/#{photo.id}"
+
+    expect(page).to have_css("input[value='#{photo.id}']", visible: false)
+  end
+end
+
+describe "/photos/[ID] — Add fan form" do
+  it "has a button that says 'Add fan'", points: 1 do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = user.id
+    photo.save
+
+    visit "/photos/#{photo.id}"
+
+    expect(page).to have_css("button", text: "Add fan")
+  end
+end
+
+describe "/photos/[ID] — Add fan form" do
+  it "works", points: 1 do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = user.id
+    photo.save
+
+    first_other_user = User.new
+    first_other_user.username = "bob_#{Time.now.to_i}"
+    first_other_user.save
+
+    second_other_user = User.new
+    second_other_user.username = "carol_#{Time.now.to_i}"
+    second_other_user.save
+
+    visit "/photos/#{photo.id}"
+
+    fill_in "Fan ID", with: second_other_user.id
+
+    click_on "Add fan"
+
+    new_like = Like.find_by(photo_id: photo.id, fan_id: second_other_user.id)
+
+    expect(new_like).to_not be_nil
+  end
+end
+
+describe "/photos/[ID] — Add fan form" do
+  it "redirects back to the same page", points: 1 do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = user.id
+    photo.save
+
+    first_other_user = User.new
+    first_other_user.username = "bob_#{Time.now.to_i}"
+    first_other_user.save
+
+    second_other_user = User.new
+    second_other_user.username = "carol_#{Time.now.to_i}"
+    second_other_user.save
+
+    visit "/photos/#{photo.id}"
+
+    fill_in "Author ID", with: second_other_user.id
+
+    click_on "Add fan"
+
+    expect(page).to have_current_path("/photos/#{photo.id}")
+  end
+end
+
+describe "/photos/[ID] — Add comment form" do
+  it "has a label for 'Author ID'", points: 1, hint: h("copy_must_match label_for_input") do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+    
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = user.id
+    photo.save
+
+    visit "/photos/#{photo.id}"
+
+    expect(page).to have_css("label", text: "Author ID")
+  end
+end
+
+describe "/photos/[ID] — Add comment form" do
+  it "has a label for 'Comment'", points: 1, hint: h("copy_must_match label_for_input") do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = user.id
+    photo.save
+
+    visit "/photos/#{photo.id}"
+
+    expect(page).to have_css("label", text: "Comment")
+  end
+end
+
+describe "/photos/[ID] — Add comment form" do
+  it "has a textarea for the comment", points: 1 do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save
+
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = user.id
+    photo.save
+
+    visit "/photos/#{photo.id}"
+
+    expect(page).to have_css("textarea")
+  end
+end
+
+describe "/photos/[ID] — Add comment form" do
+  it "has a button that says 'Add comment'", points: 1 do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+
+    user = User.new
+    user.username = "BagelFace"
+    user.save 
+
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = user.id
+    photo.save
+
+    visit "/photos/#{photo.id}"
+
+    expect(page).to have_css("button", text: "Add comment")
+  end
+end
+
+describe "/photos/[ID] — Add comment form" do
+  it "works", points: 1 do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+    test_comment = "Some new comment #{Time.now.to_i}"
+    
+    first_other_user = User.new
+    first_other_user.username = "bob_#{Time.now.to_i}"
+    first_other_user.save
+
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = first_other_user.id
+    photo.save
+
+    second_other_user = User.new
+    second_other_user.username = "carol_#{Time.now.to_i}"
+    second_other_user.save
+
+    visit "/photos/#{photo.id}"
+
+    fill_in "Comment", with: test_comment
+    fill_in "Author ID", with: second_other_user.id
+
+    click_on "Add comment"
+
+    new_comment = Comment.find_by(author_id: second_other_user.id, body: test_comment)
+
+    expect(new_comment).to_not be_nil
+  end
+end
+
+describe "/photos/[ID] — Add comment form" do
+  it "redirects back to the same page", points: 1 do
+
+    test_image = "https://some.test/image-#{Time.now.to_i}.jpg"
+    test_caption = "Some test caption #{Time.now.to_i}"
+    test_comment = "Some new comment #{Time.now.to_i}"
+
+    first_other_user = User.new
+    first_other_user.username = "bob_#{Time.now.to_i}"
+    first_other_user.save
+
+    photo = Photo.new
+    photo.image = test_image
+    photo.caption = test_caption
+    photo.owner_id = first_other_user.id
+    photo.save
+    
+    second_other_user = User.new
+    second_other_user.username = "carol_#{Time.now.to_i}"
+    second_other_user.save
+
+    visit "/photos/#{photo.id}"
+    fill_in "Comment", with: test_comment
+    fill_in "Author ID", with: second_other_user.id
+
+    click_on "Add comment"
 
     expect(page).to have_current_path("/photos/#{photo.id}")
   end

@@ -282,7 +282,7 @@ describe "/photos/[ANY EXISTING PHOTO ID]/comments" do
   end
 end
 
-describe "/update_comment" do
+describe "/patch_comment" do
   it "updates a record in the comments table", :points => 3 do
     user = User.new
     user.save
@@ -302,7 +302,7 @@ describe "/update_comment" do
 
     edited_body = "A better comment #{rand(1000)}"
 
-    get "/update_comment_record/#{comment.id}?input_body=#{edited_body}"
+    get "/patch_comment/#{comment.id}?input_body=#{edited_body}"
 
     expect(comment.reload.body).to eq(edited_body)
   end
