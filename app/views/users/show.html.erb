@@ -10,7 +10,7 @@
   <dt>Following</dt>
   <dd><%= @user.following.count %></dd>
 
-  <dt>Edit photo</dt>
+  <dt>Edit user</dt>
   <dd>
     <form action="/patch_user/<%= @user.id %>" method="post">
       <label for="browser_username">Username</label>
@@ -27,7 +27,7 @@
 <nav>
   <ul>
     <li>
-      <a href="/users/<%= @user.username %>">Own photos</a>
+      <a href="/users/<%= @user.username %>">Profile</a>
     </li>
     <li>
       <a href="/users/<%= @user.username %>/liked_photos">Liked photos</a>
