@@ -12,6 +12,8 @@
 #
 
 class User < ApplicationRecord
+  validates(:username, { :presence => true})
+  
   def comments
     return Comment.where({ :author_id => self.id })
   end
