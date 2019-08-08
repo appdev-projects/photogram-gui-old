@@ -12,7 +12,7 @@ Things to keep in mind:
 
     ```html
     <label for="zebra">Fan</label>
-    <input id="zebra type="text" name="qs_fan_id">
+    <input id="zebra" type="text" name="qs_fan_id">
     ```
 
     This lets the browser know which label belongs to which input, which helps with [accessibility](https://developer.mozilla.org/en-US/docs/Learn/Accessibility/What_is_accessibility), ergonomics, SEO, and most importantly for you right now — automated tests.
