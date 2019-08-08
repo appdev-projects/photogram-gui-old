@@ -6,7 +6,7 @@ class CommentsController < ApplicationController
   end
 
   def show
-    the_id = params.fetch(:fr_comment_id)
+    the_id = params.fetch(:rt_comment_id)
     comment = Comment.where({ :id => the_id }).at(0)
 
     render({ :json => comment.as_json })
@@ -25,7 +25,7 @@ class CommentsController < ApplicationController
   end
 
   def update
-    the_id = params.fetch(:fr_comment_id)
+    the_id = params.fetch(:rt_comment_id)
     comment = Comment.where({ :id => the_id }).at(0)
 
     comment.author_id = params.fetch(:qs_author_id, comment.author_id)
@@ -38,7 +38,7 @@ class CommentsController < ApplicationController
   end
 
   def destroy
-    the_id = params.fetch(:fr_comment_id)
+    the_id = params.fetch(:rt_comment_id)
     comment = Comment.where({ :id => the_id }).at(0)
 
     comment.destroy

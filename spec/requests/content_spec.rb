@@ -190,16 +190,17 @@ end
 describe "/photos/[ANY EXISTING PHOTO ID]" do
   it "has the details of the photo", :points => 0 do
     user = User.new
+    user.username = "canon"
     user.save
-
+    
     photo = Photo.new
     photo.owner_id = user.id
     photo.caption = "Some caption #{rand(100)}"
     photo.image = "http://some.random.url/file#{rand(100)}.jpg"
     photo.save
-
+    
     get "/photos/#{photo.id}.json"
-
+    
     expect(response.body).to eq(photo.to_json)
   end
 end
@@ -207,19 +208,21 @@ end
 describe "/post_like" do
   it "adds a fan to a photo", :points => 0 do
     user = User.new
+    user.username = "ganon"
     user.save
-
+    
     other_user = User.new
+    other_user.username = "zelda"
     other_user.save
-
+    
     photo = Photo.new
     photo.owner_id = user.id
     photo.caption = "Some caption #{rand(100)}"
     photo.image = "http://some.random.url/file#{rand(100)}.jpg"
     photo.save
-
+    
     get "/post_like?qs_photo_id=#{photo.id}&qs_fan_id=#{other_user.id}.json"
-
+    
     expect(photo.fans).to include(other_user)
   end
 end
@@ -227,9 +230,11 @@ end
 describe "/delete_like/[ANY EXISTING LIKE ID]" do
   it "removes a fan from a photo", :points => 0 do
     user = User.new
+    user.username = "zelda"
     user.save
-
+    
     other_user = User.new
+    other_user.username = "link"
     other_user.save
 
     photo = Photo.new
@@ -252,13 +257,16 @@ end
 describe "/photos/[ANY EXISTING PHOTO ID]/comments" do
   it "has the comments left on the photo", :points => 0 do
     user = User.new
+    user.username = "ham"
     user.save
 
     photo = Photo.new
     photo.owner_id = user.id
+    photo.image = "http"
     photo.save
 
     first_commenter = User.new
+    first_commenter.username = "hamarabi"
     first_commenter.save
 
     first_comment = Comment.new
@@ -268,6 +276,7 @@ describe "/photos/[ANY EXISTING PHOTO ID]/comments" do
     first_comment.save
 
     second_commenter = User.new
+    second_commenter.username = "User.new"
     second_commenter.save
 
     second_comment = Comment.new
@@ -285,6 +294,7 @@ end
 describe "/patch_comment" do
   it "updates a record in the comments table", :points => 0 do
     user = User.new
+    user.username = "bangarang"
     user.save
 
     photo = Photo.new
@@ -292,6 +302,7 @@ describe "/patch_comment" do
     photo.save
 
     commenter = User.new
+    commenter.username = "hamtaro"
     commenter.save
 
     comment = Comment.new
