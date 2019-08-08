@@ -2,7 +2,9 @@
 
 In this project, you will add a GUI on top of the API we previously built.
 
-[This is your target.](http://photogram-gui.herokuapp.com/) It's still a little ugly, but it's step on the path. Next week we'll add dropdowns, sign in/sign out, and CSS to polish it up.
+Click "Start web server" and visit your "Live app". The starting point is the ending point of the API project. You ought to already have data.
+
+[This is your new target.](http://photogram-gui.herokuapp.com/) It's still a little ugly, but it's step on the path. Next week we'll add dropdowns, sign in/sign out, and CSS to polish it up.
 
 Users should be able to see a lists of users, photos, links to details pages, links to delete, and forms to add.
 
